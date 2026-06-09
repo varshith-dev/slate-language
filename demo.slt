@@ -34,6 +34,7 @@ spacer 24
       Review (diamond)
       Approved (diamond)
       End (circle)
+      new (Triangle)
 
       Start -> Submit
       Submit -> Review
@@ -50,6 +51,7 @@ spacer 24
         item Engineering
         item Product
         item Marketing
+
       :::
       submit SendFeedback variant=primary: Send Feedback
     :::

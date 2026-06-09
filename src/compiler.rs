@@ -86,8 +86,14 @@ impl Compiler {
                                     col2_h += child_h;
                                 }
                             }
-                            let combined_svg = format!("{}{}", col1_svg, col2_svg);
-                            (combined_svg, col1_h.max(col2_h) + 20.0)
+                            let max_h = col1_h.max(col2_h);
+                            let midline_x = x + col_width + (gap / 2.0);
+                            let midline_svg = format!(
+                                r##"<line x1="{}" y1="{}" x2="{}" y2="{}" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 4" />"##,
+                                midline_x, y, midline_x, y + max_h
+                            );
+                            let combined_svg = format!("{}{}{}", col1_svg, col2_svg, midline_svg);
+                            (combined_svg, max_h + 20.0)
                         } else {
                             // Fallback to vertical stack
                             let mut content = String::new();
@@ -128,13 +134,39 @@ impl Compiler {
                             curr_y += child_h;
                         }
                         let card_height = curr_y + 10.0;
+                        let card_tag = if !id_str.is_empty() {
+                            let tag_w = (id_str.len() * 6) + 36;
+                            format!(
+                                r##"<g transform="translate({}, {})">
+                                     <rect x="0" y="-8" width="{}" height="14" fill="#F1F5F9" rx="3" stroke="#CBD5E1" stroke-width="0.8" />
+                                     <text x="{}" y="9.5" fill="#64748B" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">card: {}</text>
+                                   </g>"##,
+                                x + 12.0, y, tag_w, tag_w / 2, id_str
+                            )
+                        } else {
+                            "".to_string()
+                        };
+                        let crosshairs = format!(
+                            r##"<g stroke="#CBD5E1" stroke-width="0.8">
+                                  <path d="M {} {} L {} {} M {} {} L {} {}" />
+                                  <path d="M {} {} L {} {} M {} {} L {} {}" />
+                                  <path d="M {} {} L {} {} M {} {} L {} {}" />
+                                  <path d="M {} {} L {} {} M {} {} L {} {}" />
+                                </g>"##,
+                            x - 5.0, y, x + 5.0, y, x, y - 5.0, x, y + 5.0,
+                            x + width - 5.0, y, x + width + 5.0, y, x + width, y - 5.0, x + width, y + 5.0,
+                            x - 5.0, y + card_height, x + 5.0, y + card_height, x, y + card_height - 5.0, x, y + card_height + 5.0,
+                            x + width - 5.0, y + card_height, x + width + 5.0, y + card_height, x + width, y + card_height - 5.0, x + width, y + card_height + 5.0
+                        );
                         let svg = format!(
                             r##"<g>
                                  <rect x="{}" y="{}" width="{}" height="{}" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12" />
                                  {}
+                                 {}
+                                 {}
                                </g>
                             "##,
-                            x, y, width, card_height, content
+                            x, y, width, card_height, card_tag, content, crosshairs
                         );
                         (svg, card_height + 24.0)
                     }
@@ -217,11 +249,13 @@ impl Compiler {
                         let svg = format!(
                             r##"<g>
                                  <rect x="{}" y="{}" width="{}" height="70" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="8" />
+                                 <rect x="{}" y="{}" width="4" height="70" fill="#4F46E5" rx="2" />
                                  <text x="{}" y="{}" class="stat-title">{}</text>
                                  <text x="{}" y="{}" class="stat-value">{}{}</text>
                                </g>
                             "##,
                             x, y, width,
+                            x, y,
                             x + 16.0, y + 24.0, id_str,
                             x + 16.0, y + 54.0, val, delta_span
                         );
@@ -233,10 +267,12 @@ impl Compiler {
                         let btn_h = 36.0;
                         let svg = format!(
                             r##"<g cursor="pointer">
-                                 <rect x="{}" y="{}" width="{}" height="{}" class="button-rect" />
+                                 <rect x="{}" y="{}" width="{}" height="{}" fill="none" stroke="#4F46E5" stroke-width="1" rx="6" stroke-dasharray="2 2" />
+                                 <rect x="{}" y="{}" width="{}" height="{}" fill="#4F46E5" rx="6" />
                                  <text x="{}" y="{}" class="button-text" text-anchor="middle">{}</text>
                                </g>
                             "##,
+                            x + 2.0, y + 2.0, btn_w, btn_h,
                             x, y, btn_w, btn_h,
                             x + btn_w / 2.0, y + 22.0, label
                         );
@@ -300,10 +336,12 @@ impl Compiler {
                         let btn_h = 36.0;
                         let svg = format!(
                             r##"<g cursor="pointer">
-                                 <rect x="{}" y="{}" width="{}" height="{}" class="button-rect" />
+                                 <rect x="{}" y="{}" width="{}" height="{}" fill="none" stroke="#4F46E5" stroke-width="1" rx="6" stroke-dasharray="2 2" />
+                                 <rect x="{}" y="{}" width="{}" height="{}" fill="#4F46E5" rx="6" />
                                  <text x="{}" y="{}" class="button-text" text-anchor="middle">{}</text>
                                </g>
                             "##,
+                            x + 2.0, y + 2.0, btn_w, btn_h,
                             x, y, btn_w, btn_h,
                             x + btn_w / 2.0, y + 22.0, label
                         );
@@ -375,11 +413,25 @@ impl Compiler {
         let padding = 40.0;
         let max_val = dataset.iter().map(|(_, v)| *v).fold(0.0, f64::max).max(1.0);
         
+        let chart_tag = if !id.is_empty() {
+            let tag_w = (id.len() * 5) + 40;
+            format!(
+                r##"<g transform="translate(12, 0)">
+                     <rect x="0" y="-8" width="{}" height="14" fill="#F1F5F9" rx="3" stroke="#CBD5E1" stroke-width="0.8" />
+                     <text x="{}" y="9.5" fill="#64748B" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">chart: {}</text>
+                   </g>"##,
+                tag_w, tag_w / 2, id
+            )
+        } else {
+            "".to_string()
+        };
+
         let mut svg = format!(
             r##"<rect x="0" y="0" width="{}" height="{}" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12" />
-               <text x="20" y="24" fill="#64748B" font-family="sans-serif" font-size="13" font-weight="bold">{}</text>
+               {}
+               <text x="20" y="24" fill="#64748B" font-family="sans-serif" font-size="11" font-weight="bold" letter-spacing="0.5">{}</text>
             "##,
-            width, height, id
+            width, height, chart_tag, id.to_uppercase()
         );
 
         let grid_count = 4;
@@ -609,16 +661,30 @@ impl Compiler {
             }
         }
 
+        let flow_tag = if !id.is_empty() {
+            let tag_w = (id.len() * 5) + 52;
+            format!(
+                r##"<g transform="translate(12, 0)">
+                     <rect x="0" y="-8" width="{}" height="14" fill="#F1F5F9" rx="3" stroke="#CBD5E1" stroke-width="0.8" />
+                     <text x="{}" y="9.5" fill="#64748B" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">diagram: {}</text>
+                   </g>"##,
+                tag_w, tag_w / 2, id
+            )
+        } else {
+            "".to_string()
+        };
+
         let mut svg = format!(
             r##"<rect x="0" y="0" width="{}" height="{}" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12" />
-               <text x="20" y="24" fill="#64748B" font-family="sans-serif" font-size="13" font-weight="bold">Flowchart: {}</text>
+               {}
+               <text x="20" y="24" fill="#64748B" font-family="sans-serif" font-size="11" font-weight="bold" letter-spacing="0.5">{}</text>
                <defs>
                  <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748B" />
                  </marker>
                </defs>
             "##,
-            width, height, id
+            width, height, flow_tag, id.to_uppercase()
         );
 
         for edge in &edges {
@@ -710,6 +776,11 @@ impl Compiler {
     fn wrap_in_svg_template(&self, content: &str, height: f64) -> String {
         format!(
             r##"<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="{}" viewBox="0 0 1000 {}" style="background-color: #F8FAFC;">
+  <defs>
+    <pattern id="dot-grid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#CBD5E1" />
+    </pattern>
+  </defs>
   <style>
     .slate-title {{ font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 32px; font-weight: 700; fill: #0F172A; }}
     .slate-subtitle {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 16px; fill: #64748B; }}
@@ -725,10 +796,13 @@ impl Compiler {
     .button-text {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; fill: #FFFFFF; font-weight: 600; }}
     .divider-line {{ stroke: #E2E8F0; stroke-width: 1; }}
   </style>
-  <rect width="1000" height="{}" fill="#F8FAFC" />
+  <rect width="1000" height="{}" fill="url(#dot-grid)" />
+  <!-- Canvas outer design blueprint border -->
+  <rect x="20" y="20" width="960" height="{}" fill="none" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="4 4" rx="16" />
+  <text x="36" y="40" fill="#94A3B8" font-family="monospace" font-size="9" font-weight="bold">SLATE ARTBOARD // 1000x{}</text>
   {}
 </svg>"##,
-            height, height, height, content
+            height, height, height, height - 40.0, height, content
         )
     }
 }
