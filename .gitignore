@@ -1,0 +1,4 @@
+/target
+/setup_err.txt
+/setup_out.txt
+*.log

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slate Live Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --border-glow: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --primary: #4F46E5;
+      --primary-hover: #3730A3;
+      --accent-glow: none;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      padding: 40px 20px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .slate-page {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .slate-section-elem {
+      margin-bottom: 40px;
+    }
+
+    .slate-section {
+      position: relative;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+      background: var(--bg-surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-tag {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .slate-row {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .slate-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .slate-card {
+      background: var(--bg-surface);
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .slate-card[onclick]:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .slate-divider {
+      border: none;
+      height: 1px;
+      background: #E2E8F0;
+      margin: 20px 0;
+    }
+
+    /* Typography */
+    .slate-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .slate-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .slate-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .slate-text {
+      font-size: 15px;
+      color: #334155;
+      margin-bottom: 16px;
+    }
+
+    .slate-code {
+      font-family: monospace;
+      background: #F1F5F9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #0F172A;
+    }
+
+    .slate-link {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--primary);
+      transition: color 0.2s;
+    }
+
+    .slate-link:hover {
+      color: #3730A3;
+      border-bottom-style: solid;
+    }
+
+    /* Buttons */
+    .slate-button {
+      display: inline-block;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .variant-default {
+      background: #F1F5F9;
+      color: #334155;
+    }
+
+    .variant-default:hover {
+      background: #E2E8F0;
+    }
+
+    .variant-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .variant-primary:hover {
+      background: #3730A3;
+      transform: translateY(-1px);
+    }
+
+    .slate-button:active {
+      transform: translateY(0);
+    }
+
+    /* Forms */
+    .slate-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--bg-surface);
+      border: 1px solid #E2E8F0;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .slate-input, .slate-select {
+      background: #FFFFFF;
+      border: 1px solid #D1D5DB;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .slate-input:focus, .slate-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .type-tag {
+      position: absolute;
+      right: 12px;
+      top: 32px;
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      color: #4F46E5;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .required-star {
+      color: #EF4444;
+    }
+
+    .submit-button {
+      margin-top: 10px;
+      align-self: flex-start;
+    }
+
+    /* KPI Stats */
+    .slate-stat-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 16px;
+      min-width: 140px;
+      flex-grow: 1;
+    }
+
+    .stat-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-delta {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .delta-positive {
+      background: #DEF7EC;
+      color: #03543F;
+    }
+
+    .delta-negative {
+      background: #FDE8E8;
+      color: #9B1C1C;
+    }
+
+    /* Media */
+    .slate-image {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* Visualizations Containers */
+    .chart-container, .flowchart-container {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-container h3, .flowchart-container h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .slate-chart-svg, .slate-flowchart-svg {
+      flex-grow: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-bar {
+      transition: fill 0.2s;
+    }
+
+    .chart-bar:hover {
+      fill: var(--primary) !important;
+      cursor: pointer;
+    }
+
+    .flowchart-node {
+      transition: transform 0.2s;
+    }
+
+    .flowchart-node:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    .slate-relationship {
+      font-size: 13px;
+      background: #F8FAFC;
+      border-left: 3px solid var(--primary);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+  <script>
+    function handleSlateAction(actionBody) {
+      console.log("Slate Action executing:", actionBody);
+      // Simulate action
+      if (actionBody.startsWith("navigate(")) {
+        const dest = actionBody.match(/'(.*?)'|"(.*?)"/);
+        const path = dest ? (dest[1] || dest[2]) : "/";
+        alert("Slate Action: Navigating to " + path);
+      } else {
+        alert("Action Triggered: " + actionBody);
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1 class="slate-title">Slate Universal Language Demo</h1>
+<div id="Hero" class="slate-section-elem" style="text-align: center;">
+<h1 class="slate-title">Slate Universal Language Demo</h1>
+<p class="slate-subtitle">Visual interfaces, charts, diagrams, and layouts compiled natively.</p>
+</div>
+<hr class="slate-divider" />
+<div id="Analytics" class="slate-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+<div id="StatsCard" class="slate-card" >
+<h3 class="slate-heading">KPI Overview</h3>
+<div id="ActiveUsers" class="slate-stat-card">
+  <div class="stat-title">ActiveUsers</div>
+  <div class="stat-value">0 <span class="stat-delta delta-positive">+12.4%</span></div>
+</div>
+<div id="TotalRevenue" class="slate-stat-card">
+  <div class="stat-title">TotalRevenue</div>
+  <div class="stat-value">$94k <span class="stat-delta delta-positive">+8.7%</span></div>
+</div>
+<div class="slate-spacer" style="height: 20px;"></div>
+<p class="slate-text">Real-time statistics fetched from your visual data model.</p>
+</div>
+<div id="RevenueChartCard" class="slate-card" >
+<h3 class="slate-heading">Monthly Revenue Distribution</h3>
+<div class="chart-container">
+  <h3>Monthly (parsed data: monthly_revenue)</h3>
+  <svg width="100%" height="100%" viewBox="0 0 500 300" class="slate-chart-svg">
+    <line x1="40" y1="40" x2="460" y2="40" stroke="#E2E8F0" stroke-dasharray="4" />
+    <text x="32" y="40" fill="#64748B" font-size="10" text-anchor="end" alignment-baseline="middle">8900</text>
+    <line x1="40" y1="95" x2="460" y2="95" stroke="#E2E8F0" stroke-dasharray="4" />
+    <text x="32" y="95" fill="#64748B" font-size="10" text-anchor="end" alignment-baseline="middle">6675</text>
+    <line x1="40" y1="150" x2="460" y2="150" stroke="#E2E8F0" stroke-dasharray="4" />
+    <text x="32" y="150" fill="#64748B" font-size="10" text-anchor="end" alignment-baseline="middle">4450</text>
+    <line x1="40" y1="205" x2="460" y2="205" stroke="#E2E8F0" stroke-dasharray="4" />
+    <text x="32" y="205" fill="#64748B" font-size="10" text-anchor="end" alignment-baseline="middle">2225</text>
+    <line x1="40" y1="260" x2="460" y2="260" stroke="#E2E8F0" stroke-dasharray="4" />
+    <text x="32" y="260" fill="#64748B" font-size="10" text-anchor="end" alignment-baseline="middle">0</text>
+    <rect class="chart-bar" x="55" y="156.17977528089887" width="52" height="103.82022471910112" fill="#6366F1" rx="4">
+      <title>Jan: 4200</title>
+    </rect>
+    <text x="81" y="275" fill="#64748B" font-size="10" text-anchor="middle">Jan</text>
+    <rect class="chart-bar" x="122" y="141.34831460674158" width="52" height="118.65168539325842" fill="#6366F1" rx="4">
+      <title>Feb: 4800</title>
+    </rect>
+    <text x="148" y="275" fill="#64748B" font-size="10" text-anchor="middle">Feb</text>
+    <rect class="chart-bar" x="189" y="106.74157303370785" width="52" height="153.25842696629215" fill="#6366F1" rx="4">
+      <title>Mar: 6200</title>
+    </rect>
+    <text x="215" y="275" fill="#64748B" font-size="10" text-anchor="middle">Mar</text>
+    <rect class="chart-bar" x="256" y="116.62921348314606" width="52" height="143.37078651685394" fill="#6366F1" rx="4">
+      <title>Apr: 5800</title>
+    </rect>
+    <text x="282" y="275" fill="#64748B" font-size="10" text-anchor="middle">Apr</text>
+    <rect class="chart-bar" x="323" y="84.49438202247191" width="52" height="175.5056179775281" fill="#6366F1" rx="4">
+      <title>May: 7100</title>
+    </rect>
+    <text x="349" y="275" fill="#64748B" font-size="10" text-anchor="middle">May</text>
+    <rect class="chart-bar" x="390" y="40" width="52" height="220" fill="#6366F1" rx="4">
+      <title>Jun: 8900</title>
+    </rect>
+    <text x="416" y="275" fill="#64748B" font-size="10" text-anchor="middle">Jun</text>
+  </svg>
+</div>
+</div>
+</div>
+<div class="slate-spacer" style="height: 24px;"></div>
+<div id="MoreVisuals" class="slate-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+<div id="FlowCard" class="slate-card" >
+<h3 class="slate-heading">Business Operations Pipeline</h3>
+<div id="ApprovalProcess" class="slate-flowchart">
+<div id="Start" class="slate-node">
+Start</div>
+<div id="Submit" class="slate-node">
+Submit</div>
+<div id="Review" class="slate-node">
+Review</div>
+<div id="Approved" class="slate-node">
+Approved</div>
+<div id="End" class="slate-node">
+End</div>
+<div class="slate-relationship">Start &rarr; Submit </div>
+<div class="slate-relationship">Submit &rarr; Review </div>
+<div class="slate-relationship">Review &rarr; Approved (Pass)</div>
+<div class="slate-relationship">Approved &rarr; End </div>
+</div>
+</div>
+<div id="FormCard" class="slate-card" >
+<h3 class="slate-heading">Interactive Feedback Form</h3>
+<form id="FeedbackForm" action="/api/feedback" method="POST" class="slate-form">
+<div class="form-group">
+  <label for="UserEmail">UserEmail <span class="required-star">*</span></label>
+  <input type="email" name="UserEmail" placeholder="enter your email" class="slate-input" required /> <span class="type-tag">:: Email</span>
+</div>
+<div class="form-group">
+  <label for="Department">Department</label>
+  <select name="Department" class="slate-select">
+    <option value="Engineering">Engineering</option>
+    <option value="Product">Product</option>
+    <option value="Marketing">Marketing</option>
+  </select>
+</div>
+<button type="submit" class="slate-button variant-primary submit-button">Submit</button>
+</form>
+</div>
+</div>
+
+  
+</body>
+</html>

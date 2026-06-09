@@ -1,0 +1,57 @@
+# Slate Universal Language Demo
+
+::: section Hero align=center
+# Slate Universal Language Demo
+## Visual interfaces, charts, diagrams, and layouts compiled natively.
+:::
+
+---
+
+::: grid Analytics cols=2 gap=24
+  ::: card StatsCard
+    ### KPI Overview
+    stat ActiveUsers value=14820 delta=+12.4%
+    stat TotalRevenue value=$94k delta=+8.7%
+    
+    spacer 20
+    Real-time statistics fetched from your visual data model.
+  :::
+
+  ::: card RevenueChartCard
+    ### Monthly Revenue Distribution
+    bar-chart Monthly data=monthly_revenue color=#6366F1
+  :::
+:::
+
+spacer 24
+
+::: grid MoreVisuals cols=2 gap=24
+  ::: card FlowCard
+    ### Business Operations Pipeline
+    ::: flowchart ApprovalProcess
+      Start (circle)
+      Submit (rect)
+      Review (diamond)
+      Approved (diamond)
+      End (circle)
+
+      Start -> Submit
+      Submit -> Review
+      Review -> Approved: Pass
+      Approved -> End
+    :::
+  :::
+
+  ::: card FormCard
+    ### Interactive Feedback Form
+    ::: form FeedbackForm action="/api/feedback" method=POST
+      *required email UserEmail placeholder="enter your email" :: Email
+      ::: select Department
+        item Engineering
+        item Product
+        item Marketing
+      :::
+      submit SendFeedback variant=primary: Send Feedback
+    :::
+  :::
+:::

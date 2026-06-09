@@ -1,0 +1,51 @@
+{
+  "name": "slate-vscode",
+  "displayName": "Slate Visual Language Support",
+  "description": "Syntax highlighting and direct visual preview for the Slate visual language.",
+  "version": "0.1.0",
+  "publisher": "slate",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onLanguage:slate"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "slate",
+        "aliases": ["Slate", "slate"],
+        "extensions": [".slt"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "slate",
+        "scopeName": "source.slate",
+        "path": "./syntaxes/slate.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "slate.showPreview",
+        "title": "Slate: Show Visual Preview",
+        "category": "Slate"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == slate",
+          "command": "slate.showPreview",
+          "group": "navigation"
+        }
+      ]
+    }
+  }
+}

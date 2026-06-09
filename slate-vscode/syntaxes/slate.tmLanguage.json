@@ -1,0 +1,127 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Slate Visual Language",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#headers"
+    },
+    {
+      "include": "#blocks"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#relationships"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#properties"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.slate",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "headers": {
+      "patterns": [
+        {
+          "name": "markup.heading.slate",
+          "match": "^\\s*#{1,6}\\s+.*$"
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "name": "keyword.control.block.slate",
+          "match": "^\\s*(:::)\\s*(\\w+)?(?:\\s+(\\w+))?"
+        },
+        {
+          "name": "keyword.control.block.end.slate",
+          "match": "^\\s*(:::)\\s*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.other.slate",
+          "match": "\\b(stat|spacer|divider|button|submit|email|input|password|select|item|node|flowchart|flow|form|grid|card|row|section|page)\\b"
+        }
+      ]
+    },
+    "relationships": {
+      "patterns": [
+        {
+          "match": "(\\w+)\\s*(->)\\s*(\\w+)",
+          "captures": {
+            "1": { "name": "variable.other.slate" },
+            "2": { "name": "keyword.operator.relationship.slate" },
+            "3": { "name": "variable.other.slate" }
+          }
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.slate",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.slate",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.slate",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.slate",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.slate",
+          "match": "\\b(\\+|-)?\\d+(\\.\\d+)?%?\\b"
+        }
+      ]
+    },
+    "properties": {
+      "patterns": [
+        {
+          "match": "\\b(\\w+)\\s*(=)\\s*([^\\s\"']+)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.slate" },
+            "2": { "name": "keyword.operator.assignment.slate" },
+            "3": { "name": "string.unquoted.slate" }
+          }
+        }
+      ]
+    }
+  ],
+  "scopeName": "source.slate"
+}
