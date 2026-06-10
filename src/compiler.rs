@@ -41,17 +41,7 @@ impl Compiler {
             } => {
                 let id_str = id.as_deref().unwrap_or("");
                 match tag.as_str() {
-                    "section" => {
-                        let mut content = String::new();
-                        let mut curr_y = 0.0;
-                        for child in children {
-                            let (child_svg, child_h) = self.render_node_to_svg(child, x, y + curr_y, width);
-                            content.push_str(&child_svg);
-                            curr_y += child_h;
-                        }
-                        (content, curr_y)
-                    }
-                    "page" => {
+                    "section" | "page" | "form" => {
                         let mut content = String::new();
                         let mut curr_y = 0.0;
                         for child in children {
@@ -129,34 +119,21 @@ impl Compiler {
                         let mut content = String::new();
                         let mut curr_y = 24.0;
                         for child in children {
-                            let (child_svg, child_h) = self.render_node_to_svg(child, x + 20.0, y + curr_y, width - 40.0);
+                            let (child_svg, child_h) = self.render_node_to_svg(child, x + 24.0, y + curr_y, width - 48.0);
                             content.push_str(&child_svg);
                             curr_y += child_h;
                         }
                         let card_height = curr_y + 12.0;
-                        let card_tag = if !id_str.is_empty() {
-                            let tag_w = (id_str.len() * 6) + 36;
-                            format!(
-                                r##"<g transform="translate({}, {})">
-                                     <rect x="0" y="-8" width="{}" height="14" fill="#F1F5F9" rx="3" stroke="#CBD5E1" stroke-width="0.8" />
-                                     <text x="{}" y="9.5" fill="#64748B" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">card: {}</text>
-                                   </g>"##,
-                                x + 12.0, y, tag_w, tag_w / 2, id_str
-                            )
-                        } else {
-                            "".to_string()
-                        };
                         let svg = format!(
                             r##"<g>
-                                 <rect x="{}" y="{}" width="{}" height="{}" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="8" />
-                                 <rect x="{}" y="{}" width="4" height="{}" fill="#4F46E5" rx="2" />
-                                 {}
+                                 <rect x="{}" y="{}" width="{}" height="{}" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" rx="6" />
+                                 <rect x="{}" y="{}" width="4" height="{}" fill="#6366F1" rx="2" />
                                  {}
                                </g>
                             "##,
                             x, y, width, card_height,
                             x, y, card_height,
-                            card_tag, content
+                            content
                         );
                         (svg, card_height + 24.0)
                     }
@@ -168,14 +145,14 @@ impl Compiler {
                             text.to_string()
                         };
                         let svg = format!(
-                            r##"<g>
-                                 <text x="{}" y="{}" class="slate-title">{}</text>
-                                 <line x1="{}" y1="{}" x2="{}" y2="{}" stroke="#E2E8F0" stroke-width="2" />
-                               </g>"##,
-                            x, y + 28.0, display_text,
-                            x, y + 38.0, x + width, y + 38.0
+                            r##"<foreignObject x="{}" y="{}" width="{}" height="55">
+                                 <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 700; color: #0F172A; padding-bottom: 8px; border-bottom: 2px solid #E2E8F0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                   {}
+                                 </div>
+                               </foreignObject>"##,
+                            x, y, width, display_text
                         );
-                        (svg, 48.0)
+                        (svg, 65.0)
                     }
                     "subtitle" => {
                         let text = raw_text.as_deref().unwrap_or("");
@@ -185,10 +162,14 @@ impl Compiler {
                             text.to_string()
                         };
                         let svg = format!(
-                            r##"<text x="{}" y="{}" class="slate-subtitle">{}</text>"##,
-                            x, y + 16.0, display_text
+                            r##"<foreignObject x="{}" y="{}" width="{}" height="35">
+                                 <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Inter', sans-serif; font-size: 16px; color: #64748B; margin: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis;">
+                                   {}
+                                 </div>
+                               </foreignObject>"##,
+                            x, y, width, display_text
                         );
-                        (svg, 26.0)
+                        (svg, 35.0)
                     }
                     "heading" => {
                         let text = raw_text.as_deref().unwrap_or("");
@@ -198,14 +179,14 @@ impl Compiler {
                             text.to_string()
                         };
                         let svg = format!(
-                            r##"<g>
-                                 <text x="{}" y="{}" class="slate-heading">{}</text>
-                                 <line x1="{}" y1="{}" x2="{}" y2="{}" stroke="#E2E8F0" stroke-width="1" />
-                               </g>"##,
-                            x, y + 18.0, display_text,
-                            x, y + 26.0, x + width, y + 26.0
+                            r##"<foreignObject x="{}" y="{}" width="{}" height="45">
+                                 <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 600; color: #0F172A; padding-bottom: 4px; border-bottom: 1px solid #E2E8F0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                   {}
+                                 </div>
+                               </foreignObject>"##,
+                            x, y, width, display_text
                         );
-                        (svg, 36.0)
+                        (svg, 50.0)
                     }
                     "text" => {
                         let text = raw_text.as_deref().unwrap_or("");
@@ -215,65 +196,68 @@ impl Compiler {
                             text.to_string()
                         };
 
-                        if display_text.starts_with("- ") || display_text.starts_with("* ") {
+                        let (html_content, calculated_h) = if display_text.starts_with("- ") || display_text.starts_with("* ") {
                             let clean_text = display_text[2..].to_string();
-                            let svg = format!(
-                                r##"<g>
-                                     <circle cx="{}" cy="{}" r="3" fill="#4F46E5" />
-                                     <text x="{}" y="{}" class="slate-text">{}</text>
-                                   </g>"##,
-                                x + 6.0, y + 10.0,
-                                x + 18.0, y + 14.0, clean_text
-                            );
-                            (svg, 22.0)
+                            let lines = (clean_text.len() as f64 / 80.0).ceil().max(1.0);
+                            let h = lines * 22.0 + 8.0;
+                            (format!(
+                                r##"<ul style="margin: 0; padding-left: 20px; font-family: 'Inter', sans-serif; font-size: 14px; color: #334155;">
+                                     <li style="line-height: 1.6;">{}</li>
+                                   </ul>"##,
+                                clean_text
+                            ), h)
                         } else if display_text.starts_with("[x] ") {
                             let clean_text = display_text[4..].to_string();
-                            let svg = format!(
-                                r##"<g>
-                                     <rect x="{}" y="{}" width="12" height="12" fill="#EEF2FF" stroke="#4F46E5" stroke-width="1.2" rx="2" />
-                                     <path d="M {} {} L {} {} L {} {}" fill="none" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                     <text x="{}" y="{}" class="slate-text">{}</text>
-                                   </g>"##,
-                                x, y + 2.0,
-                                x + 3.0, y + 8.0, x + 5.5, y + 10.5, x + 9.0, y + 4.5,
-                                x + 20.0, y + 14.0, clean_text
-                            );
-                            (svg, 22.0)
+                            let lines = (clean_text.len() as f64 / 80.0).ceil().max(1.0);
+                            let h = lines * 22.0 + 8.0;
+                            (format!(
+                                r##"<div style="font-family: 'Inter', sans-serif; font-size: 14px; color: #334155; display: flex; align-items: flex-start; gap: 8px; margin: 0; line-height: 1.6;">
+                                     <span style="color: #6366F1; font-weight: bold; font-size: 16px; line-height: 1;">✓</span>
+                                     <span>{}</span>
+                                   </div>"##,
+                                clean_text
+                            ), h)
                         } else if display_text.starts_with("[ ] ") {
                             let clean_text = display_text[4..].to_string();
-                            let svg = format!(
-                                r##"<g>
-                                     <rect x="{}" y="{}" width="12" height="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2" rx="2" />
-                                     <text x="{}" y="{}" class="slate-text">{}</text>
-                                   </g>"##,
-                                x, y + 2.0,
-                                x + 20.0, y + 14.0, clean_text
-                            );
-                            (svg, 22.0)
+                            let lines = (clean_text.len() as f64 / 80.0).ceil().max(1.0);
+                            let h = lines * 22.0 + 8.0;
+                            (format!(
+                                r##"<div style="font-family: 'Inter', sans-serif; font-size: 14px; color: #64748B; display: flex; align-items: flex-start; gap: 8px; margin: 0; line-height: 1.6;">
+                                     <span style="border: 1px solid #94A3B8; border-radius: 3px; width: 12px; height: 12px; display: inline-block; margin-top: 4px;"></span>
+                                     <span>{}</span>
+                                   </div>"##,
+                                clean_text
+                            ), h)
                         } else if display_text.starts_with("> ") {
                             let clean_text = display_text[2..].to_string();
-                            let svg = format!(
-                                r##"<g>
-                                     <rect x="{}" y="{}" width="{}" height="22" fill="#F1F5F9" rx="2" />
-                                     <line x1="{}" y1="{}" x2="{}" y2="{}" stroke="#64748B" stroke-width="3" stroke-linecap="round" />
-                                     <text x="{}" y="{}" class="slate-text" font-style="italic" fill="#475569">{}</text>
-                                   </g>"##,
-                                x, y, width,
-                                x, y + 2.0, x, y + 20.0,
-                                x + 12.0, y + 14.0, clean_text
-                            );
-                            (svg, 26.0)
+                            let lines = (clean_text.len() as f64 / 80.0).ceil().max(1.0);
+                            let h = lines * 24.0 + 16.0;
+                            (format!(
+                                r##"<blockquote style="margin: 0; padding: 8px 16px; background-color: #F8FAFC; border-left: 4px solid #64748B; border-radius: 0 4px 4px 0; font-family: 'Inter', sans-serif; font-style: italic; font-size: 14px; color: #475569; line-height: 1.6;">
+                                     {}
+                                   </blockquote>"##,
+                                clean_text
+                            ), h)
                         } else {
-                            let svg = format!(
-                                r##"<text x="{}" y="{}" class="slate-text">{}</text>"##,
-                                x, y + 14.0, display_text
-                            );
-                            (svg, 22.0)
-                        }
+                            let lines = (display_text.len() as f64 / 80.0).ceil().max(1.0);
+                            let h = lines * 22.0 + 8.0;
+                            (format!(
+                                r##"<p style="margin: 0; font-family: 'Inter', sans-serif; font-size: 14px; color: #334155; line-height: 1.6;">{}</p>"##,
+                                display_text
+                            ), h)
+                        };
+
+                        let svg = format!(
+                            r##"<foreignObject x="{}" y="{}" width="{}" height="{}">
+                                 {}
+                               </foreignObject>"##,
+                            x, y, width, calculated_h, html_content
+                        );
+                        (svg, calculated_h + 8.0)
                     }
                     "divider" => {
                         let svg = format!(
-                            r##"<line x1="{}" y1="{}" x2="{}" y2="{}" class="divider-line" />"##,
+                            r##"<line x1="{}" y1="{}" x2="{}" y2="{}" stroke="#E2E8F0" stroke-width="1.5" />"##,
                             x, y + 10.0, x + width, y + 10.0
                         );
                         (svg, 20.0)
@@ -298,13 +282,11 @@ impl Compiler {
                         let svg = format!(
                             r##"<g>
                                  <rect x="{}" y="{}" width="{}" height="70" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="8" />
-                                 <rect x="{}" y="{}" width="4" height="70" fill="#4F46E5" rx="2" />
                                  <text x="{}" y="{}" class="stat-title">{}</text>
                                  <text x="{}" y="{}" class="stat-value">{}{}</text>
                                </g>
                             "##,
                             x, y, width,
-                            x, y,
                             x + 16.0, y + 24.0, id_str,
                             x + 16.0, y + 54.0, val, delta_span
                         );
@@ -331,11 +313,8 @@ impl Compiler {
                         let required_star = if *is_required { r##"<tspan fill="#EF4444">*</tspan>"## } else { "" };
                         let placeholder = config.get_string_property("placeholder").unwrap_or_default();
                         let type_tag = type_assertion.as_ref().map(|t| format!(
-                            r##"<g transform="translate({}, {})">
-                                 <rect x="0" y="0" width="55" height="18" fill="#EEF2FF" rx="4" stroke="#C7D2FE" />
-                                 <text x="27" y="12" fill="#4F46E5" font-family="sans-serif" font-size="9" font-weight="bold" text-anchor="middle">:: {}</text>
-                               </g>"##,
-                            x + width - 65.0, y + 33.0, t
+                            r##"<text x="{}" y="{}" fill="#64748B" font-family="sans-serif" font-size="11" font-weight="normal" text-anchor="end">:: {}</text>"##,
+                            x + width - 12.0, y + 46.0, t
                         )).unwrap_or_default();
 
                         let svg = format!(
@@ -462,25 +441,11 @@ impl Compiler {
         let padding = 40.0;
         let max_val = dataset.iter().map(|(_, v)| *v).fold(0.0, f64::max).max(1.0);
         
-        let chart_tag = if !id.is_empty() {
-            let tag_w = (id.len() * 5) + 40;
-            format!(
-                r##"<g transform="translate(12, 0)">
-                     <rect x="0" y="-8" width="{}" height="14" fill="#F1F5F9" rx="3" stroke="#CBD5E1" stroke-width="0.8" />
-                     <text x="{}" y="9.5" fill="#64748B" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">chart: {}</text>
-                   </g>"##,
-                tag_w, tag_w / 2, id
-            )
-        } else {
-            "".to_string()
-        };
-
         let mut svg = format!(
             r##"<rect x="0" y="0" width="{}" height="{}" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12" />
-               {}
                <text x="20" y="24" fill="#64748B" font-family="sans-serif" font-size="11" font-weight="bold" letter-spacing="0.5">{}</text>
             "##,
-            width, height, chart_tag, id.to_uppercase()
+            width, height, id.to_uppercase()
         );
 
         let grid_count = 4;
@@ -710,22 +675,8 @@ impl Compiler {
             }
         }
 
-        let flow_tag = if !id.is_empty() {
-            let tag_w = (id.len() * 5) + 52;
-            format!(
-                r##"<g transform="translate(12, 0)">
-                     <rect x="0" y="-8" width="{}" height="14" fill="#F1F5F9" rx="3" stroke="#CBD5E1" stroke-width="0.8" />
-                     <text x="{}" y="9.5" fill="#64748B" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">diagram: {}</text>
-                   </g>"##,
-                tag_w, tag_w / 2, id
-            )
-        } else {
-            "".to_string()
-        };
-
         let mut svg = format!(
             r##"<rect x="0" y="0" width="{}" height="{}" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12" />
-               {}
                <text x="20" y="24" fill="#64748B" font-family="sans-serif" font-size="11" font-weight="bold" letter-spacing="0.5">{}</text>
                <defs>
                  <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
@@ -733,7 +684,7 @@ impl Compiler {
                  </marker>
                </defs>
             "##,
-            width, height, flow_tag, id.to_uppercase()
+            width, height, id.to_uppercase()
         );
 
         for edge in &edges {
@@ -824,12 +775,7 @@ impl Compiler {
 
     fn wrap_in_svg_template(&self, content: &str, height: f64) -> String {
         format!(
-            r##"<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="{}" viewBox="0 0 1000 {}" style="background-color: #F8FAFC;">
-  <defs>
-    <pattern id="dot-grid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1" fill="#CBD5E1" />
-    </pattern>
-  </defs>
+            r##"<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="{}" viewBox="0 0 1000 {}" style="background-color: #FFFFFF;">
   <style>
     .slate-title {{ font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 32px; font-weight: 700; fill: #0F172A; }}
     .slate-subtitle {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 16px; fill: #64748B; }}
@@ -845,13 +791,9 @@ impl Compiler {
     .button-text {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; fill: #FFFFFF; font-weight: 600; }}
     .divider-line {{ stroke: #E2E8F0; stroke-width: 1; }}
   </style>
-  <rect width="1000" height="{}" fill="url(#dot-grid)" />
-  <!-- Canvas outer design blueprint border -->
-  <rect x="20" y="20" width="960" height="{}" fill="none" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="4 4" rx="16" />
-  <text x="36" y="40" fill="#94A3B8" font-family="monospace" font-size="9" font-weight="bold">SLATE ARTBOARD // 1000x{}</text>
   {}
 </svg>"##,
-            height, height, height, height - 40.0, height, content
+            height, height, content
         )
     }
 }

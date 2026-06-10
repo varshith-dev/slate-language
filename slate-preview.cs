@@ -12,11 +12,9 @@ namespace SlatePreviewer
         private Panel topPanel;
         private Label lblTitle;
         private Label lblFileName;
+        private Button btnToggleEditor;
         private Button btnOpen;
         private Button btnSave;
-        private Button btnCompile;
-        private Button btnExport;
-        private CheckBox chkLivePreview;
         
         private SplitContainer splitContainer;
         private TextBox txtEditor;
@@ -38,10 +36,14 @@ namespace SlatePreviewer
             if (!string.IsNullOrEmpty(initialFile) && File.Exists(initialFile))
             {
                 LoadFile(initialFile);
+                splitContainer.Panel1Collapsed = true;
+                btnToggleEditor.Text = "Edit Code";
             }
             else
             {
                 LoadDefaultText();
+                splitContainer.Panel1Collapsed = false;
+                btnToggleEditor.Text = "Hide Editor";
             }
         }
 
@@ -51,75 +53,76 @@ namespace SlatePreviewer
             this.Size = new Size(1100, 750);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.MinimumSize = new Size(800, 500);
-            this.BackColor = Color.FromArgb(248, 250, 252);
+            this.BackColor = Color.FromArgb(255, 255, 255);
 
             // 1. Top Panel (Toolbar with flat styles)
             topPanel = new Panel();
             topPanel.Height = 56;
             topPanel.Dock = DockStyle.Top;
-            topPanel.BackColor = Color.FromArgb(15, 23, 42); // slate-900
+            topPanel.BackColor = Color.FromArgb(255, 255, 255);
+            topPanel.Paint += (s, pe) => {
+                using (var pen = new Pen(Color.FromArgb(226, 232, 240), 1))
+                {
+                    pe.Graphics.DrawLine(pen, 0, topPanel.Height - 1, topPanel.Width, topPanel.Height - 1);
+                }
+            };
 
             lblTitle = new Label();
             lblTitle.Text = "SLATE STUDIO";
             lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.White;
+            lblTitle.ForeColor = Color.FromArgb(15, 23, 42);
             lblTitle.Location = new Point(16, 16);
             lblTitle.AutoSize = true;
 
             lblFileName = new Label();
             lblFileName.Text = "untitled.slt";
             lblFileName.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            lblFileName.ForeColor = Color.FromArgb(148, 163, 184); // slate-400
+            lblFileName.ForeColor = Color.FromArgb(100, 116, 139);
             lblFileName.Location = new Point(140, 20);
             lblFileName.AutoSize = true;
 
             // Buttons
-            btnOpen = CreateFlatButton("Open file", 300, Color.FromArgb(51, 65, 85), Color.White);
+            btnToggleEditor = CreateFlatButton("Hide Editor", 300, Color.FromArgb(241, 245, 249), Color.FromArgb(51, 65, 85));
+            btnToggleEditor.Click += new EventHandler(OnToggleEditorClick);
+
+            btnOpen = CreateFlatButton("Open file", 410, Color.FromArgb(241, 245, 249), Color.FromArgb(51, 65, 85));
             btnOpen.Click += new EventHandler(OnOpenClick);
 
-            btnSave = CreateFlatButton("Save", 390, Color.FromArgb(51, 65, 85), Color.White);
+            btnSave = CreateFlatButton("Save", 520, Color.FromArgb(241, 245, 249), Color.FromArgb(51, 65, 85));
             btnSave.Click += new EventHandler(OnSaveClick);
-
-            btnCompile = CreateFlatButton("Compile", 480, Color.FromArgb(79, 70, 229), Color.White); // Indigo
-            btnCompile.Click += new EventHandler(OnCompileClick);
-
-            btnExport = CreateFlatButton("Export SVG", 570, Color.FromArgb(13, 148, 136), Color.White); // Teal
-            btnExport.Click += new EventHandler(OnExportClick);
-
-            chkLivePreview = new CheckBox();
-            chkLivePreview.Text = "Live Compile";
-            chkLivePreview.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            chkLivePreview.ForeColor = Color.White;
-            chkLivePreview.Location = new Point(680, 16);
-            chkLivePreview.Size = new Size(110, 24);
-            chkLivePreview.Checked = true;
 
             topPanel.Controls.Add(lblTitle);
             topPanel.Controls.Add(lblFileName);
+            topPanel.Controls.Add(btnToggleEditor);
             topPanel.Controls.Add(btnOpen);
             topPanel.Controls.Add(btnSave);
-            topPanel.Controls.Add(btnCompile);
-            topPanel.Controls.Add(btnExport);
-            topPanel.Controls.Add(chkLivePreview);
 
             // 2. SplitContainer
             splitContainer = new SplitContainer();
             splitContainer.Dock = DockStyle.Fill;
             splitContainer.SplitterDistance = 500;
             splitContainer.SplitterWidth = 6;
-            splitContainer.BackColor = Color.FromArgb(226, 232, 240);
+            splitContainer.BackColor = Color.FromArgb(241, 245, 249);
 
-            // Left Panel (Editor Text Box)
+            // Left Panel (Editor Text Box inside 16px Padding container)
+            Panel txtContainer = new Panel();
+            txtContainer.Dock = DockStyle.Fill;
+            txtContainer.Padding = new Padding(16, 16, 16, 16);
+            txtContainer.BackColor = Color.White;
+
             txtEditor = new TextBox();
             txtEditor.Multiline = true;
             txtEditor.ScrollBars = ScrollBars.Both;
             txtEditor.WordWrap = false;
             txtEditor.Dock = DockStyle.Fill;
-            txtEditor.Font = new Font("Consolas", 10.5F);
+            txtEditor.Font = new Font("Consolas", 11F);
             txtEditor.ForeColor = Color.FromArgb(15, 23, 42);
             txtEditor.BackColor = Color.White;
             txtEditor.BorderStyle = BorderStyle.None;
             txtEditor.TextChanged += new EventHandler(OnTextChanged);
+
+            txtContainer.Controls.Add(txtEditor);
+            splitContainer.Panel1.Controls.Add(txtContainer);
 
             // Right Panel (Web Browser)
             webBrowser = new WebBrowser();
@@ -128,15 +131,14 @@ namespace SlatePreviewer
             webBrowser.IsWebBrowserContextMenuEnabled = false;
             webBrowser.WebBrowserShortcutsEnabled = false;
 
-            splitContainer.Panel1.Controls.Add(txtEditor);
             splitContainer.Panel2.Controls.Add(webBrowser);
 
             // 3. Status Strip
             statusStrip = new StatusStrip();
             statusLabel = new ToolStripStatusLabel("Ready");
             statusStrip.Items.Add(statusLabel);
-            statusStrip.BackColor = Color.FromArgb(241, 245, 249);
-            statusStrip.ForeColor = Color.FromArgb(71, 85, 105);
+            statusStrip.BackColor = Color.FromArgb(255, 255, 255);
+            statusStrip.ForeColor = Color.FromArgb(100, 116, 139);
 
             this.Controls.Add(splitContainer);
             this.Controls.Add(statusStrip);
@@ -148,19 +150,66 @@ namespace SlatePreviewer
             liveTimer.Tick += new EventHandler(OnLiveTimerTick);
         }
 
+        private static System.Drawing.Drawing2D.GraphicsPath GetRoundedRectPath(RectangleF rect, float radius)
+        {
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            float diameter = radius * 2;
+            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+
         private Button CreateFlatButton(string text, int x, Color backColor, Color foreColor)
         {
             Button btn = new Button();
             btn.Text = text;
-            btn.Location = new Point(x, 10);
-            btn.Size = new Size(80, 32);
+            btn.Location = new Point(x, 12);
+            btn.Size = new Size(95, 32);
             btn.BackColor = backColor;
             btn.ForeColor = foreColor;
             btn.FlatStyle = FlatStyle.Flat;
             btn.FlatAppearance.BorderSize = 0;
             btn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btn.Cursor = Cursors.Hand;
+
+            btn.Paint += (s, pe) => {
+                Button b = (Button)s;
+                pe.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                pe.Graphics.Clear(b.Parent.BackColor);
+
+                using (var path = GetRoundedRectPath(new RectangleF(0, 0, b.Width, b.Height), 6))
+                {
+                    // Draw background
+                    using (var brush = new SolidBrush(b.BackColor))
+                    {
+                        pe.Graphics.FillPath(brush, path);
+                    }
+                    
+                    // Draw border if it's a light button
+                    if (b.BackColor == Color.FromArgb(241, 245, 249) || b.BackColor == Color.FromArgb(255, 255, 255))
+                    {
+                        using (var pen = new Pen(Color.FromArgb(203, 213, 225), 1))
+                        {
+                            pe.Graphics.DrawPath(pen, path);
+                        }
+                    }
+
+                    // Draw text
+                    TextRenderer.DrawText(pe.Graphics, b.Text, b.Font, b.ClientRectangle, b.ForeColor, 
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+                }
+            };
+
             return btn;
+        }
+
+        private void OnToggleEditorClick(object sender, EventArgs e)
+        {
+            splitContainer.Panel1Collapsed = !splitContainer.Panel1Collapsed;
+            btnToggleEditor.Text = splitContainer.Panel1Collapsed ? "Edit Code" : "Hide Editor";
         }
 
         private void LocateCompiler()
@@ -199,11 +248,8 @@ namespace SlatePreviewer
         private void OnTextChanged(object sender, EventArgs e)
         {
             isTextChanged = true;
-            if (chkLivePreview.Checked)
-            {
-                liveTimer.Stop();
-                liveTimer.Start();
-            }
+            liveTimer.Stop();
+            liveTimer.Start();
         }
 
         private void OnLiveTimerTick(object sender, EventArgs e)
