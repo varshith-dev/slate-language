@@ -1,0 +1,503 @@
+[
+  {
+    "type": "element",
+    "tag": "title",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Slate Universal Language Demo",
+    "is_required": false,
+    "type_assertion": null
+  },
+  {
+    "type": "element",
+    "tag": "section",
+    "id": "Hero",
+    "config": {
+      "properties": {"align": "center"},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "title",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Slate Universal Language Demo",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "subtitle",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Visual interfaces, charts, diagrams, and layouts compiled natively.",
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+  {
+    "type": "element",
+    "tag": "divider",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+  {
+    "type": "element",
+    "tag": "grid",
+    "id": "Analytics",
+    "config": {
+      "properties": {"cols": 2, "gap": 24},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "card",
+    "id": "StatsCard",
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "heading",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "KPI Overview",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "stat",
+    "id": "ActiveUsers",
+    "config": {
+      "properties": {"value": 14820, "delta": "+12.4%"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "stat",
+    "id": "TotalRevenue",
+    "config": {
+      "properties": {"value": "$94k", "delta": "+8.7%"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "spacer",
+    "id": null,
+    "config": {
+      "properties": {"height": 20},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "text",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Real-time statistics fetched from your visual data model.",
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "card",
+    "id": "RevenueChartCard",
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "heading",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Monthly Revenue Distribution",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "bar-chart",
+    "id": "Monthly",
+    "config": {
+      "properties": {"data": "monthly_revenue", "color": "#6366F1"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+  {
+    "type": "element",
+    "tag": "spacer",
+    "id": null,
+    "config": {
+      "properties": {"height": 24},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+  {
+    "type": "element",
+    "tag": "grid",
+    "id": "MoreVisuals",
+    "config": {
+      "properties": {"cols": 2, "gap": 24},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "card",
+    "id": "FlowCard",
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "heading",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Business Operations Pipeline",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "flowchart",
+    "id": "ApprovalProcess",
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "node",
+    "id": "Start",
+    "config": {
+      "properties": {"shape": "circle"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Start",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "node",
+    "id": "Submit",
+    "config": {
+      "properties": {"shape": "rect"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Submit",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "node",
+    "id": "Review",
+    "config": {
+      "properties": {"shape": "diamond"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Review",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "node",
+    "id": "Approved",
+    "config": {
+      "properties": {"shape": "diamond"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Approved",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "node",
+    "id": "End",
+    "config": {
+      "properties": {"shape": "circle"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "End",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "node",
+    "id": "new",
+    "config": {
+      "properties": {"shape": "Triangle"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "new",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "relationship",
+    "source": "Start",
+    "target": "Submit",
+    "config": {
+      "properties": {},
+      "positional": []
+    }
+  },
+      {
+    "type": "relationship",
+    "source": "Submit",
+    "target": "Review",
+    "config": {
+      "properties": {},
+      "positional": []
+    }
+  },
+      {
+    "type": "relationship",
+    "source": "Review",
+    "target": "Approved",
+    "config": {
+      "properties": {"label": "Pass"},
+      "positional": []
+    }
+  },
+      {
+    "type": "relationship",
+    "source": "Approved",
+    "target": "End",
+    "config": {
+      "properties": {},
+      "positional": []
+    }
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "card",
+    "id": "FormCard",
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "heading",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Interactive Feedback Form",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "form",
+    "id": "FeedbackForm",
+    "config": {
+      "properties": {"action": "/api/feedback", "method": "POST"},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "email",
+    "id": "UserEmail",
+    "config": {
+      "properties": {"placeholder": "enter your email"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": null,
+    "is_required": true,
+    "type_assertion": "Email"
+  },
+      {
+    "type": "element",
+    "tag": "select",
+    "id": "Department",
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [
+      {
+    "type": "element",
+    "tag": "item",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Engineering",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "item",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Product",
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "item",
+    "id": null,
+    "config": {
+      "properties": {},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Marketing",
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  },
+      {
+    "type": "element",
+    "tag": "submit",
+    "id": "SendFeedback",
+    "config": {
+      "properties": {"variant": "primary"},
+      "positional": []
+    },
+    "children": [],
+    "raw_text": "Send Feedback",
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  }
+    ],
+    "raw_text": null,
+    "is_required": false,
+    "type_assertion": null
+  }
+]

@@ -1,207 +1,178 @@
-# Slate: Universal Visual Scripting Language & SVG Compiler
+# Slate: Universal Visual Scripting Language and Rendering Engine
 
-Slate is a flat, brace-free, Markdown-inspired scripting language designed for creating premium visual layouts, charts, forms, and diagrams. The compiler translates Slate scripts (`.slt`) directly into self-contained vector graphic (`.svg`) files. 
+Slate is a lightweight, brace-free scripting language designed for creating structural layouts, data visualizations, process flowcharts, and interactive forms. It compiles `.slt` scripts into a clean, human-readable Abstract Syntax Tree (AST) in JSON format. 
 
-Combined with its dedicated **VS Code Extension**, Slate provides syntax coloring and a real-time, side-by-side visual editor preview without requiring an external web browser.
+This JSON output is then natively parsed and rendered directly in the browser using the standalone JavaScript engine `slate.js`, avoiding the need for complex HTML templates, SVGs, or heavy front-end frameworks.
 
----
+## Core Architecture and Philosophy
 
-## 🎨 Design Philosophy & Visual Spec
+Slate separates the content definition from the visual rendering entirely:
 
-Slate is built to produce visually stunning, professional outputs. The rendering engine adheres to a **premium, gradient-free light theme**:
+1. **The Language and Compiler**: The `slate` CLI (written in Rust) acts solely as a parser and compiler. It takes the `.slt` text file, tokenizes it using a zero-regex, character-level lexer, builds an AST using a recursive descent parser, and serializes that AST to a standard JSON format. 
+2. **The Rendering Engine**: The visual presentation is handled exclusively by `slate.js`, a standalone, zero-dependency browser script. It consumes the JSON AST and programmatically constructs DOM elements, applying a consistent, premium, flat grayscale design system.
 
-- **Color Palette**: Solid HSL/Hex tailored colors. No gradients, shadows are replaced by clean `#E2E8F0` borders.
-- **Background**: Soft off-white base `#F8FAFC`.
-- **Card Elements**: Pure white background `#FFFFFF`, thin `#E2E8F0` border, `rx="12"` rounded corners.
-- **Typography**: Premium font stacks using **Outfit** (for headings) and **Inter** (for UI/text labels).
-- **Controls & Accents**: Solid Indigo `#4F46E5` for primary buttons, Teal `#0D9488` for success/process actions, Pink `#DB2777` for decision markers, and Soft Red `#FEF2F2` / Crimson `#DC2626` for warning elements.
+This architecture ensures that the Slate compiler remains purely functional and decoupled from front-end layout constraints, while the browser engine handles responsive grids, chart plotting, and flowchart topologies natively.
 
----
+## Language Syntax and Grammar
 
-## 🚀 Key Features
+Slate relies on visual keywords, indentation-agnostic blocks, and standard Markdown conventions. The language requires no brackets or complex closures.
 
-1. **Direct SVG Compilation**: Slate compiles visual elements (grids, columns, cards, stat panels, charts, flowcharts, and interactive inputs) into a single, self-contained, optimized vector graphic (`.svg`) file.
-2. **Dynamic Flow Layout**: A built-in vertical flow layout solver dynamically calculates coordinate offsets, column distributions, card sizing, and page height.
-3. **Built-in Visualizations**:
-   - **Charts**: Embed bar, line, pie, and donut charts mapped directly to data models.
-   - **Flowcharts**: Auto-ranked nodes (circles, diamonds, rounded rectangles) linked by smooth cubic bezier arrows.
-4. **Interactive Mockups**: Complete form elements, including required text/email/password boxes with type-tags, select dropdowns, and buttons.
-5. **No Regex Policy**: The custom lexer, recursive-descent parser, and SVG layout compiler are implemented in pure, highly-maintainable Rust with **zero regular expressions**.
-6. **VS Code Extension**: Provides syntax coloring and a side-by-side, auto-updating webview preview inside the editor.
+### Typography and Text
 
----
+Markdown-style headers and plain text are supported. Unordered lists use dashes or asterisks. Blockquotes use the greater-than symbol. Task lists are supported with standard checkbox notation.
 
-## 📁 Directory Structure
-
-```
-├── src/
-│   ├── ast.rs          # Abstract Syntax Tree representation
-│   ├── lexer.rs        # Hand-written character-level tokenizer (Zero-Regex)
-│   ├── parser.rs       # Recursive descent parser (Zero-Regex)
-│   ├── compiler.rs     # Vertical flow layout SVG compilation engine
-│   ├── main.rs         # Command line interface commands (compile, watch, help)
-│   ├── lib.rs          # Project library interface
-│   └── bin/
-│       └── setup.rs    # CLI installer executable source (compiles to slate-init.exe)
-├── slate-vscode/       # VS Code extension source directory
-│   ├── package.json    # Extension manifest and commands registration
-│   ├── language-configuration.json # Bracket closing & comment character config
-│   ├── src/
-│   │   └── extension.js # Webview preview panel and auto compile-on-save watcher
-│   └── syntaxes/
-│       └── slate.tmLanguage.json # TextMate grammar for editor syntax coloring
-├── slate-setup.cs      # WinForms graphic installer code (gradient-free light GUI)
-├── install_extension.ps1 # Local installation script for the VS Code extension
-├── Cargo.toml          # Rust package manager configuration
-└── demo.slt            # Visual script demonstration source file
-```
-
----
-
-## 🛠️ Installation & Setup
-
-You can install the Slate Compiler and VS Code Extension using the automated script or compiled installers.
-
-### Method 1: Local Setup Script (Recommended)
-Compile the compiler and install the VS Code Extension in a single command using PowerShell:
-
-1. Build the release binaries:
-   ```powershell
-   cargo build --release
-   ```
-2. Run the local extension installation script:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File .\install_extension.ps1
-   ```
-3. Restart or reload VS Code (`Ctrl+R` or search `Developer: Reload Window` in command palette).
-
-### Method 2: GUI Installer (`slate-setup.exe`)
-A standalone C# WinForms graphic installer utility is provided in `slate-setup.exe`. Running this installer will:
-- Copy the built `slate.exe` compiler to your home directory (`~/.slate/bin/slate.exe`).
-- Copy the logo to `~/.slate/logo.png`.
-- Configure your local User `PATH` environment variable.
-- Broadcast changes globally so the `slate` CLI command is immediately active in terminal sessions.
-
----
-
-## 💻 CLI Usage
-
-Once installed, use the `slate` CLI tool to compile and watch Slate files:
-
-- **Compile to SVG**:
-  ```bash
-  slate compile demo.slt -o demo.svg
-  ```
-  *(If `-o` is omitted, the compiler outputs to `<filename>.svg` by default)*
-
-- **Interactive Live Server (Deprecated)**:
-  ```bash
-  slate watch demo.slt --port 8080
-  ```
-
----
-
-## 🔌 VS Code Extension & Live Previewer
-
-The Slate extension enables a seamless design feedback loop inside VS Code:
-
-- **Syntax Highlighting**: Elements like blocks (`:::`), directives (`stat`, `bar-chart`, `flowchart`), strings, numbers, flow arrows (`->`), comments (`//`), and headers (`#`, `##`, `###`) are highlighted using a custom TextMate grammar.
-- **Live Visual Preview**:
-  1. Open a Slate script file (`.slt`).
-  2. Click the **Show Visual Preview** icon on the top-right editor tab toolbar, or open the command palette (`Ctrl+Shift+P`) and select `Slate: Show Visual Preview`.
-  3. A side-by-side Webview panel will open, displaying the vector SVG graphic.
-  4. Edit the `.slt` script and save (`Ctrl+S`). The extension automatically triggers the compiler and updates the preview instantly!
-
----
-
-## 📝 Syntax Reference & Grammar Guidelines
-
-Slate is written using visual keywords, blocks, and Markdown headers. Comments can be written on any line using `//`.
-
-### 1. Typography
-Markdown-style headers and raw text:
 ```slate
-# Main Title (compiled to Slate Title in Outfitters, 32px Bold)
-## Subtitle description text (compiled to Slate Subtitle in Inter, 16px)
-### Element Heading label (compiled to Slate Card Heading in Outfit, 18px Bold)
-Standard descriptive body text (compiled to Slate Text in Inter, 14px)
+# Page Title
+## Section Subtitle
+### Card Heading
+
+Standard paragraph text describing the current section.
+
+- Bullet item one
+- Bullet item two
+
+[x] Completed task
+[ ] Pending task
+
+> A callout or blockquote.
 ```
 
-### 2. Layouts
-All layout elements are blocks starting with `::: <type> <id> [config]` and closed with `:::`.
+### Structural Layouts
 
-* **Grid Container**: Groups elements into columns (e.g. 2 columns) with custom gaps.
-  ```slate
-  ::: grid MyGrid cols=2 gap=24
-    // Children cards go here
-  :::
-  ```
-* **Cards**: Visual block wrappers with rounded corners and light borders.
-  ```slate
-  ::: card MetricsCard
-    ### Daily Metrics
-    // Card body content
-  :::
-  ```
-* **Dividers & Spacers**:
-  ```slate
-  ---          // Horizontal divider line
-  spacer 24    // Vertical empty space of 24 pixels
-  ```
+Layout containers are defined using the `:::` block syntax. They take an element type, an optional identifier, and optional key-value configuration properties.
 
-### 3. Visualizations
-* **Stats Card**: Renders KPI labels, primary values, and comparative indicators.
-  ```slate
-  stat ActiveUsers value=14820 delta=+12.4%
-  stat TotalRevenue value=$94k delta=+8.7%
-  ```
-* **Charts**: Render interactive, clean bar charts, line charts, pie charts, and donut charts. Connects to internal mock dataset IDs.
-  ```slate
-  bar-chart MonthlyRevenue data=monthly_revenue color=#6366F1
-  line-chart UserGrowth data=user_growth color=#10B981
-  donut-chart UsersShare data=user_types
-  ```
-* **Flowcharts**: Standard visual diagramming container with custom nodes and connections.
-  ```slate
-  ::: flowchart LogisticsPipeline
-    Start (circle)
-    Validate (rect)
-    Route (diamond)
-    Success (circle)
-
-    Start -> Validate
-    Validate -> Route
-    Route -> Success: Pass
-  :::
-  ```
-  *Shapes supported: `circle`, `rect`, `diamond`.*
-
-### 4. Interactive Forms
-Generate clean input form mockups with validation types.
+**Grid Container**
+Grids organize children into responsive columns.
 ```slate
-::: form ContactForm action="/api/contact" method=POST
-  *required email UserEmail placeholder="enter your email" :: Email Address
-  ::: select Category
-    item General Inquiry
-    item Sales Department
-    item Technical Support
-  :::
-  submit SendRequest variant=primary: Submit Form
+::: grid DashboardGrid cols=2 gap=24
+  // children elements
 :::
 ```
 
+**Cards**
+Cards provide a bordered visual wrapper around content, featuring a flat grayscale aesthetic without shadows.
+```slate
+::: card SummaryCard
+  ### Summary
+  // children elements
+:::
+```
+
+**Structural Utilities**
+Dividers and spacers manage vertical rhythm.
+```slate
 ---
+spacer 24
+```
 
-## 🔧 Developer Setup
+### Data Visualization
 
-### Rebuilding Binary
-If you modify the parser or compiler source code, run the following:
+Slate provides native components for data visualization, automatically handling axes, legends, and scaling via the JavaScript engine.
+
+**Statistical KPI Components**
+```slate
+stat ActiveUsers value=14820 delta=+12.4%
+```
+
+**Charts**
+Charts reference dataset identifiers. The `slate.js` engine natively renders bar, line, pie, and donut charts.
+```slate
+bar-chart RevenueByMonth data=monthly_revenue
+line-chart GrowthTrend data=user_growth
+pie-chart TrafficSources data=default
+donut-chart Budget Allocation data=default
+```
+
+### Flowcharts and Process Diagrams
+
+Flowcharts are defined as blocks containing nodes and directional relationships. The `slate.js` engine dynamically calculates the topological rank of nodes and renders a vertical, auto-routed SVG diagram directly in the DOM.
+
+```slate
+::: flowchart DevOpsPipeline
+  Code (rect)
+  Build (rect)
+  Test (diamond)
+  Prod (circle)
+
+  Code -> Build
+  Build -> Test
+  Test -> Prod: Pass
+:::
+```
+Supported shapes are `rect`, `circle`, and `diamond`.
+
+### Interactive Form Mockups
+
+Form elements allow the rapid prototyping of user interfaces and data collection views.
+
+```slate
+::: form RegistrationForm action="/register" method=POST
+  *required input FullName placeholder="John Doe" :: String
+  *required email UserEmail placeholder="name@domain.com" :: Email
+  
+  ::: select Department
+    item Engineering
+    item Sales
+  :::
+  
+  submit Register variant=primary: Create Account
+:::
+```
+
+## Setup and Usage
+
+The project provides a Rust-based compiler and a JavaScript rendering engine.
+
+### Building the Compiler
+
+To build the `slate` CLI from source:
 ```bash
 cargo build --release
 ```
+The compiled executable will be located in `target/release/slate.exe`.
 
-### Run Parser Tests
+### Compiling Slate Files
+
+To compile a `.slt` script into its JSON AST representation:
 ```bash
-cargo test
+slate compile example.slt -o example.json
 ```
-*(Tests check tokenizer token emissions, custom character scanning, and Markdown-script structural hierarchy parsing).*
+If the output flag `-o` is omitted, the compiler defaults to creating a `.json` file with the same base name as the input file.
+
+### Browser Rendering
+
+To render the compiled JSON in a browser, include `slate.js` in your HTML environment and call the render function, passing the JSON AST and a target DOM element.
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="slate.js"></script>
+</head>
+<body>
+    <div id="slate-container"></div>
+    <script>
+        // Assuming astJson is the loaded JSON output from the compiler
+        Slate.render(astJson, document.getElementById('slate-container'));
+    </script>
+</body>
+</html>
+```
+
+Alternatively, `slate.js` provides a convenience method to fetch and render a JSON file via XHR:
+```javascript
+Slate.renderFromUrl('example.json', document.getElementById('slate-container'));
+```
+
+## Directory Structure
+
+- `src/`: Rust source code for the compiler.
+  - `lexer.rs`: Custom zero-regex character tokenizer.
+  - `parser.rs`: Recursive descent parser.
+  - `compiler.rs`: JSON AST serialization module.
+  - `ast.rs`: Abstract Syntax Tree definitions.
+  - `main.rs`: CLI entry point.
+  - `server.rs`: Live-reload local development server.
+- `slate.js`: Native JavaScript DOM rendering engine.
+- `demo.slt`, `Firstcode.slt`: Example Slate scripts demonstrating syntax.
+- `slate-vscode/`: VS Code extension for syntax highlighting.

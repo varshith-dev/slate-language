@@ -1,0 +1,308 @@
+// Slate Universal Language — Full Feature Demonstration
+// Every element, layout, chart, diagram, and form control in one document.
+
+# Slate Language Reference
+
+## A complete demonstration of every visual element in the Slate markup system.
+
+---
+
+::: section Overview align=center
+  # Project Dashboard
+  ## Real-time analytics, diagrams, forms, and structured layouts compiled from plain text.
+:::
+
+---
+
+// =============================================
+// SECTION 1: Typography and Text Elements
+// =============================================
+
+### Typography
+
+Standard paragraph text renders cleanly with system fonts and comfortable line height.
+
+- Bullet point items begin with a dash
+- Each item renders with a clean dot marker
+- Lists support unlimited depth and length
+* Asterisk bullets also work identically
+
+> Blockquotes are prefixed with the greater-than symbol and render with a left accent border.
+
+[x] Checked checkbox item with a filled square marker
+[x] Another completed task in the checklist
+[ ] Unchecked checkbox item with an empty square marker
+[ ] Pending task waiting for completion
+
+---
+
+// =============================================
+// SECTION 2: Statistics and KPI Cards
+// =============================================
+
+### Key Performance Indicators
+
+::: grid KPIGrid cols=2 gap=24
+  ::: card MetricsCard
+    ### Real-Time Metrics
+    stat ActiveUsers value=14820 delta=+12.4%
+    stat TotalRevenue value=$94k delta=+8.7%
+    stat OpenTickets value=237 delta=-3.1%
+    stat Uptime value=99.97% delta=+0.02%
+
+    spacer 12
+    All metrics refresh every 30 seconds from the data pipeline.
+  :::
+
+  ::: card PerformanceCard
+    ### System Performance
+    stat CPUUsage value=42% delta=-5%
+    stat MemoryUsage value=67% delta=+2%
+    stat DiskIO value=128MB/s delta=+15%
+    stat NetworkLatency value=12ms delta=-3ms
+
+    spacer 12
+    > Infrastructure metrics collected from all 24 production nodes.
+  :::
+:::
+
+---
+
+// =============================================
+// SECTION 3: Charts and Data Visualization
+// =============================================
+
+### Charts and Visualizations
+
+::: grid ChartsGrid cols=2 gap=24
+  ::: card BarChartCard
+    ### Monthly Revenue Distribution
+    bar-chart MonthlyRevenue data=monthly_revenue
+  :::
+
+  ::: card LineChartCard
+    ### User Growth Over Time
+    line-chart UserGrowth data=user_growth
+  :::
+:::
+
+spacer 16
+
+::: grid PieChartsGrid cols=2 gap=24
+  ::: card PieChartCard
+    ### Traffic Source Breakdown
+    pie-chart TrafficSources data=default
+  :::
+
+  ::: card DonutChartCard
+    ### Department Budget Allocation
+    donut-chart BudgetAllocation data=default
+  :::
+:::
+
+---
+
+// =============================================
+// SECTION 4: Flowcharts and Diagrams
+// =============================================
+
+### Flowcharts and Process Diagrams
+
+::: grid FlowGrid cols=2 gap=24
+  ::: card ApprovalFlowCard
+    ### Approval Pipeline
+    ::: flowchart ApprovalProcess
+      Start (circle)
+      Submit (rect)
+      Review (diamond)
+      Approved (diamond)
+      Deploy (rect)
+      End (circle)
+
+      Start -> Submit
+      Submit -> Review
+      Review -> Approved: Pass
+      Review -> Submit: Reject
+      Approved -> Deploy
+      Deploy -> End
+    :::
+  :::
+
+  ::: card DevOpsFlowCard
+    ### DevOps Pipeline
+    ::: flowchart CICDPipeline
+      Code (rect)
+      Build (rect)
+      Test (diamond)
+      Stage (rect)
+      Prod (circle)
+
+      Code -> Build
+      Build -> Test
+      Test -> Stage: Pass
+      Test -> Code: Fail
+      Stage -> Prod
+    :::
+  :::
+:::
+
+---
+
+// =============================================
+// SECTION 5: Forms and Input Controls
+// =============================================
+
+### Forms and Input Controls
+
+::: grid FormsGrid cols=2 gap=24
+  ::: card RegistrationFormCard
+    ### User Registration
+    ::: form RegistrationForm action="/api/register" method=POST
+      *required input FullName placeholder="John Doe" :: String
+      *required email EmailAddress placeholder="user@example.com" :: Email
+      *required password UserPassword placeholder="minimum 8 characters" :: Password
+      input PhoneNumber placeholder="+1 (555) 000-0000" :: Phone
+
+      spacer 8
+
+      ::: select Country
+        item United States
+        item United Kingdom
+        item Germany
+        item Japan
+        item India
+        item Australia
+      :::
+
+      ::: select Role
+        item Developer
+        item Designer
+        item Product Manager
+        item Data Scientist
+      :::
+
+      spacer 8
+      submit RegisterButton variant=primary: Create Account
+    :::
+  :::
+
+  ::: card FeedbackFormCard
+    ### Feedback Survey
+    ::: form FeedbackForm action="/api/feedback" method=POST
+      *required email ContactEmail placeholder="your@email.com" :: Email
+      input Subject placeholder="Brief description of feedback" :: String
+
+      ::: select Category
+        item Bug Report
+        item Feature Request
+        item Performance Issue
+        item Documentation
+        item Other
+      :::
+
+      ::: select Priority
+        item Critical
+        item High
+        item Medium
+        item Low
+      :::
+
+      spacer 8
+      [x] I agree to the terms of service
+      [ ] Subscribe to product newsletter
+
+      spacer 8
+      submit SubmitFeedback variant=primary: Send Feedback
+      button CancelButton variant=secondary: Cancel
+    :::
+  :::
+:::
+
+---
+
+// =============================================
+// SECTION 6: Mixed Layout Composition
+// =============================================
+
+### Composite Dashboard View
+
+::: grid CompositeDashboard cols=2 gap=24
+  ::: card SummaryCard
+    ### Weekly Summary
+    stat NewSignups value=1247 delta=+22%
+    stat ChurnRate value=2.1% delta=-0.4%
+    stat NPS value=72 delta=+5
+
+    spacer 12
+    - Revenue target achieved at 108%
+    - Customer satisfaction improved by 5 points
+    - Three new enterprise contracts signed
+    - Zero critical incidents this week
+
+    spacer 8
+    > The team exceeded all quarterly targets ahead of schedule.
+  :::
+
+  ::: card WorkflowCard
+    ### Release Workflow
+    ::: flowchart ReleaseProcess
+      Plan (rect)
+      Develop (rect)
+      QA (diamond)
+      Release (rect)
+      Monitor (circle)
+
+      Plan -> Develop
+      Develop -> QA
+      QA -> Release: Approved
+      QA -> Develop: Issues
+      Release -> Monitor
+    :::
+
+    spacer 12
+    [x] Sprint planning completed
+    [x] Feature branches merged
+    [ ] QA regression testing
+    [ ] Staging deployment
+    [ ] Production release
+  :::
+:::
+
+spacer 24
+
+::: card FullWidthCard
+  ### Architecture Overview
+  ::: flowchart SystemArchitecture
+    Client (rect)
+    Gateway (rect)
+    Auth (diamond)
+    API (rect)
+    Cache (rect)
+    Database (circle)
+    Queue (rect)
+    Worker (rect)
+
+    Client -> Gateway
+    Gateway -> Auth
+    Auth -> API: Valid
+    API -> Cache
+    API -> Database
+    API -> Queue
+    Queue -> Worker
+    Worker -> Database
+  :::
+:::
+
+---
+
+### Document Footer
+
+This document demonstrates every element supported by the Slate markup language.
+
+- Typography: titles, subtitles, headings, paragraphs, lists, blockquotes, checkboxes
+- Layout: sections, grids, cards, rows, spacers, dividers
+- Data: stat panels, bar charts, line charts, pie charts, donut charts
+- Diagrams: flowcharts with rect, circle, diamond nodes and labeled edges
+- Forms: text inputs, email fields, password fields, select dropdowns, submit buttons
+
+> Slate compiles to structured JSON and renders natively through the slate.js engine.

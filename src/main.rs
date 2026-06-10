@@ -20,7 +20,7 @@ fn main() {
         "compile" => {
             if args.len() < 3 {
                 eprintln!("\x1b[31mError: Missing input file.\x1b[0m");
-                eprintln!("Usage: slate compile <file.slt> [-o <output.html>]");
+                eprintln!("Usage: slate compile <file.slt> [-o <output.json>]");
                 process::exit(1);
             }
 
@@ -38,16 +38,15 @@ fn main() {
             }
 
             if output_file.is_empty() {
-                // Default output file name is input filename but with .svg
                 if let Some(pos) = input_file.rfind('.') {
-                    output_file = format!("{}.svg", &input_file[..pos]);
+                    output_file = format!("{}.json", &input_file[..pos]);
                 } else {
-                    output_file = format!("{}.svg", input_file);
+                    output_file = format!("{}.json", input_file);
                 }
             }
 
             println!("\x1b[34m[Slate] Compiling '{}' to '{}'...\x1b[0m", input_file, output_file);
-            match compile_to_svg(input_file, &output_file) {
+            match compile_to_json(input_file, &output_file) {
                 Ok(_) => {
                     println!("\x1b[32m[Slate] Compilation successful! Saved to {}\x1b[0m", output_file);
                 }
@@ -96,12 +95,12 @@ fn main() {
 fn print_usage() {
     println!("\x1b[35m=== Slate Universal Visual Language Compiler ===\x1b[0m");
     println!("Usage:");
-    println!("  slate compile <file.slt> [-o <output.svg>]   Compile Slate code to vector SVG graphic");
-    println!("  slate watch <file.slt> [--port <port>]       Start live reload server and recompile on save");
-    println!("  slate help                                  Show this help message");
+    println!("  slate compile <file.slt> [-o <output.json>]   Compile Slate code to JSON AST format");
+    println!("  slate watch <file.slt> [--port <port>]        Start live reload server and recompile on save");
+    println!("  slate help                                    Show this help message");
 }
 
-fn compile_to_svg(input_path: &str, output_path: &str) -> Result<(), String> {
+fn compile_to_json(input_path: &str, output_path: &str) -> Result<(), String> {
     let content = fs::read_to_string(input_path)
         .map_err(|e| format!("Failed to read input file: {}", e))?;
 
@@ -118,9 +117,9 @@ fn compile_to_svg(input_path: &str, output_path: &str) -> Result<(), String> {
     }
 
     let compiler = Compiler::new(false);
-    let svg = compiler.compile(&ast_nodes);
+    let json = compiler.compile(&ast_nodes);
 
-    fs::write(output_path, svg)
+    fs::write(output_path, json)
         .map_err(|e| format!("Failed to write output file: {}", e))?;
 
     Ok(())

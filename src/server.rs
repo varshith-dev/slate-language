@@ -19,19 +19,19 @@ pub fn start_server(file_path: &str, port: u16) {
     println!("\x1b[34m[Slate] Initial compile of '{}'...\x1b[0m", file_path);
     
     // Compile initially
-    let html_content = match compile_file(file_path) {
-        Ok(html) => html,
+    let json_content = match compile_file(file_path) {
+        Ok(json) => json,
         Err(e) => {
             eprintln!("\x1b[31mInitial compile error: {}\x1b[0m", e);
-            "<h1>Slate Compilation Error</h1><pre>Check terminal for logs</pre>".to_string()
+            "{\"error\": \"Compilation error\"}".to_string()
         }
     };
 
-    let compiled_html = Arc::new(Mutex::new(html_content));
+    let compiled_json = Arc::new(Mutex::new(json_content));
     let reload_flag = Arc::new(Mutex::new(false));
 
     // Watcher thread using metadata polling (polling every 250ms)
-    let compiled_html_watcher = Arc::clone(&compiled_html);
+    let compiled_json_watcher = Arc::clone(&compiled_json);
     let reload_flag_watcher = Arc::clone(&reload_flag);
     let watched_file_str = file_path.to_string();
 
@@ -48,9 +48,9 @@ pub fn start_server(file_path: &str, port: u16) {
                     
                     println!("\x1b[32m[Slate] File modified, recompiling...\x1b[0m");
                     match compile_file(&watched_file_str) {
-                        Ok(new_html) => {
-                            if let Ok(mut html_guard) = compiled_html_watcher.lock() {
-                                *html_guard = new_html;
+                        Ok(new_json) => {
+                            if let Ok(mut json_guard) = compiled_json_watcher.lock() {
+                                *json_guard = new_json;
                             }
                             if let Ok(mut reload_guard) = reload_flag_watcher.lock() {
                                 *reload_guard = true;
@@ -76,10 +76,10 @@ pub fn start_server(file_path: &str, port: u16) {
     for request in server.incoming_requests() {
         let url = request.url();
         match url {
-            "/" | "/index.html" => {
-                let html_guard = compiled_html.lock().unwrap();
-                let mut response = Response::from_string(html_guard.clone());
-                response.add_header(Header::from_bytes(&b"Content-Type"[..], &b"text/html; charset=utf-8"[..]).unwrap());
+            "/" | "/index.html" | "/data" => {
+                let json_guard = compiled_json.lock().unwrap();
+                let mut response = Response::from_string(json_guard.clone());
+                response.add_header(Header::from_bytes(&b"Content-Type"[..], &b"application/json; charset=utf-8"[..]).unwrap());
                 let _ = request.respond(response);
             }
             "/status" => {
@@ -124,6 +124,6 @@ fn compile_file(file_path: &str) -> Result<String, String> {
     }
 
     let compiler = Compiler::new(true); // Enable live reload script
-    let html = compiler.compile(&ast_nodes);
-    Ok(html)
+    let json = compiler.compile(&ast_nodes);
+    Ok(json)
 }

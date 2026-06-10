@@ -1,0 +1,1132 @@
+{
+  "version": "1.0",
+  "format": "slate-ast",
+  "nodes": [
+    {
+      "tag": "title",
+      "text": "Slate Language Reference"
+    },
+    {
+      "tag": "subtitle",
+      "text": "A complete demonstration of every visual element in the Slate markup system."
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "section",
+      "id": "Overview",
+      "config": {
+          "align": "center"
+      },
+      "children": [
+    {
+      "tag": "title",
+      "text": "Project Dashboard"
+    },
+    {
+      "tag": "subtitle",
+      "text": "Real-time analytics, diagrams, forms, and structured layouts compiled from plain text."
+    }
+      ]
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Typography"
+    },
+    {
+      "tag": "text",
+      "text": "Standard paragraph text renders cleanly with system fonts and comfortable line height."
+    },
+    {
+      "tag": "text",
+      "text": "- Bullet point items begin with a dash"
+    },
+    {
+      "tag": "text",
+      "text": "- Each item renders with a clean dot marker"
+    },
+    {
+      "tag": "text",
+      "text": "- Lists support unlimited depth and length"
+    },
+    {
+      "tag": "text",
+      "text": "* Asterisk bullets also work identically"
+    },
+    {
+      "tag": "text",
+      "text": "> Blockquotes are prefixed with the greater-than symbol and render with a left accent border."
+    },
+    {
+      "tag": "text",
+      "text": "[x] Checked checkbox item with a filled square marker"
+    },
+    {
+      "tag": "text",
+      "text": "[x] Another completed task in the checklist"
+    },
+    {
+      "tag": "text",
+      "text": "[ ] Unchecked checkbox item with an empty square marker"
+    },
+    {
+      "tag": "text",
+      "text": "[ ] Pending task waiting for completion"
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Key Performance Indicators"
+    },
+    {
+      "tag": "grid",
+      "id": "KPIGrid",
+      "config": {
+          "cols": 2,
+          "gap": 24
+      },
+      "children": [
+    {
+      "tag": "card",
+      "id": "MetricsCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Real-Time Metrics"
+    },
+    {
+      "tag": "stat",
+      "id": "ActiveUsers",
+      "config": {
+          "value": 14820,
+          "delta": "+12.4%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "TotalRevenue",
+      "config": {
+          "value": "$94k",
+          "delta": "+8.7%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "OpenTickets",
+      "config": {
+          "value": 237,
+          "delta": "-3.1%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "Uptime",
+      "config": {
+          "value": "99.97%",
+          "delta": "+0.02%"
+      }
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 12
+      }
+    },
+    {
+      "tag": "text",
+      "text": "All metrics refresh every 30 seconds from the data pipeline."
+    }
+      ]
+    },
+    {
+      "tag": "card",
+      "id": "PerformanceCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "System Performance"
+    },
+    {
+      "tag": "stat",
+      "id": "CPUUsage",
+      "config": {
+          "value": "42%",
+          "delta": "-5%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "MemoryUsage",
+      "config": {
+          "value": "67%",
+          "delta": "+2%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "DiskIO",
+      "config": {
+          "value": "128MB/s",
+          "delta": "+15%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "NetworkLatency",
+      "config": {
+          "value": "12ms",
+          "delta": "-3ms"
+      }
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 12
+      }
+    },
+    {
+      "tag": "text",
+      "text": "> Infrastructure metrics collected from all 24 production nodes."
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Charts and Visualizations"
+    },
+    {
+      "tag": "grid",
+      "id": "ChartsGrid",
+      "config": {
+          "cols": 2,
+          "gap": 24
+      },
+      "children": [
+    {
+      "tag": "card",
+      "id": "BarChartCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Monthly Revenue Distribution"
+    },
+    {
+      "tag": "bar-chart",
+      "id": "MonthlyRevenue",
+      "config": {
+          "data": "monthly_revenue"
+      }
+    }
+      ]
+    },
+    {
+      "tag": "card",
+      "id": "LineChartCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "User Growth Over Time"
+    },
+    {
+      "tag": "line-chart",
+      "id": "UserGrowth",
+      "config": {
+          "data": "user_growth"
+      }
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 16
+      }
+    },
+    {
+      "tag": "grid",
+      "id": "PieChartsGrid",
+      "config": {
+          "cols": 2,
+          "gap": 24
+      },
+      "children": [
+    {
+      "tag": "card",
+      "id": "PieChartCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Traffic Source Breakdown"
+    },
+    {
+      "tag": "pie-chart",
+      "id": "TrafficSources",
+      "config": {
+          "data": "default"
+      }
+    }
+      ]
+    },
+    {
+      "tag": "card",
+      "id": "DonutChartCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Department Budget Allocation"
+    },
+    {
+      "tag": "donut-chart",
+      "id": "BudgetAllocation",
+      "config": {
+          "data": "default"
+      }
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Flowcharts and Process Diagrams"
+    },
+    {
+      "tag": "grid",
+      "id": "FlowGrid",
+      "config": {
+          "cols": 2,
+          "gap": 24
+      },
+      "children": [
+    {
+      "tag": "card",
+      "id": "ApprovalFlowCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Approval Pipeline"
+    },
+    {
+      "tag": "flowchart",
+      "id": "ApprovalProcess",
+      "children": [
+    {
+      "tag": "node",
+      "id": "Start",
+      "text": "Start",
+      "config": {
+          "shape": "circle"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Submit",
+      "text": "Submit",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Review",
+      "text": "Review",
+      "config": {
+          "shape": "diamond"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Approved",
+      "text": "Approved",
+      "config": {
+          "shape": "diamond"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Deploy",
+      "text": "Deploy",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "End",
+      "text": "End",
+      "config": {
+          "shape": "circle"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Start",
+      "target": "Submit"
+    },
+    {
+      "tag": "relationship",
+      "source": "Submit",
+      "target": "Review"
+    },
+    {
+      "tag": "relationship",
+      "source": "Review",
+      "target": "Approved",
+      "config": {
+          "label": "Pass"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Review",
+      "target": "Submit",
+      "config": {
+          "label": "Reject"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Approved",
+      "target": "Deploy"
+    },
+    {
+      "tag": "relationship",
+      "source": "Deploy",
+      "target": "End"
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "card",
+      "id": "DevOpsFlowCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "DevOps Pipeline"
+    },
+    {
+      "tag": "flowchart",
+      "id": "CICDPipeline",
+      "children": [
+    {
+      "tag": "node",
+      "id": "Code",
+      "text": "Code",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Build",
+      "text": "Build",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Test",
+      "text": "Test",
+      "config": {
+          "shape": "diamond"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Stage",
+      "text": "Stage",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Prod",
+      "text": "Prod",
+      "config": {
+          "shape": "circle"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Code",
+      "target": "Build"
+    },
+    {
+      "tag": "relationship",
+      "source": "Build",
+      "target": "Test"
+    },
+    {
+      "tag": "relationship",
+      "source": "Test",
+      "target": "Stage",
+      "config": {
+          "label": "Pass"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Test",
+      "target": "Code",
+      "config": {
+          "label": "Fail"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Stage",
+      "target": "Prod"
+    }
+      ]
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Forms and Input Controls"
+    },
+    {
+      "tag": "grid",
+      "id": "FormsGrid",
+      "config": {
+          "cols": 2,
+          "gap": 24
+      },
+      "children": [
+    {
+      "tag": "card",
+      "id": "RegistrationFormCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "User Registration"
+    },
+    {
+      "tag": "form",
+      "id": "RegistrationForm",
+      "config": {
+          "action": "/api/register",
+          "method": "POST"
+      },
+      "children": [
+    {
+      "tag": "input",
+      "id": "FullName",
+      "required": true,
+      "typeAssertion": "String",
+      "config": {
+          "placeholder": "John Doe"
+      }
+    },
+    {
+      "tag": "email",
+      "id": "EmailAddress",
+      "required": true,
+      "typeAssertion": "Email",
+      "config": {
+          "placeholder": "user@example.com"
+      }
+    },
+    {
+      "tag": "password",
+      "id": "UserPassword",
+      "required": true,
+      "typeAssertion": "Password",
+      "config": {
+          "placeholder": "minimum 8 characters"
+      }
+    },
+    {
+      "tag": "input",
+      "id": "PhoneNumber",
+      "typeAssertion": "Phone",
+      "config": {
+          "placeholder": "+1 (555) 000-0000"
+      }
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 8
+      }
+    },
+    {
+      "tag": "select",
+      "id": "Country",
+      "children": [
+    {
+      "tag": "item",
+      "text": "United States"
+    },
+    {
+      "tag": "item",
+      "text": "United Kingdom"
+    },
+    {
+      "tag": "item",
+      "text": "Germany"
+    },
+    {
+      "tag": "item",
+      "text": "Japan"
+    },
+    {
+      "tag": "item",
+      "text": "India"
+    },
+    {
+      "tag": "item",
+      "text": "Australia"
+    }
+      ]
+    },
+    {
+      "tag": "select",
+      "id": "Role",
+      "children": [
+    {
+      "tag": "item",
+      "text": "Developer"
+    },
+    {
+      "tag": "item",
+      "text": "Designer"
+    },
+    {
+      "tag": "item",
+      "text": "Product Manager"
+    },
+    {
+      "tag": "item",
+      "text": "Data Scientist"
+    }
+      ]
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 8
+      }
+    },
+    {
+      "tag": "submit",
+      "id": "RegisterButton",
+      "text": "Create Account",
+      "config": {
+          "variant": "primary"
+      }
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "card",
+      "id": "FeedbackFormCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Feedback Survey"
+    },
+    {
+      "tag": "form",
+      "id": "FeedbackForm",
+      "config": {
+          "action": "/api/feedback",
+          "method": "POST"
+      },
+      "children": [
+    {
+      "tag": "email",
+      "id": "ContactEmail",
+      "required": true,
+      "typeAssertion": "Email",
+      "config": {
+          "placeholder": "your@email.com"
+      }
+    },
+    {
+      "tag": "input",
+      "id": "Subject",
+      "typeAssertion": "String",
+      "config": {
+          "placeholder": "Brief description of feedback"
+      }
+    },
+    {
+      "tag": "select",
+      "id": "Category",
+      "children": [
+    {
+      "tag": "item",
+      "text": "Bug Report"
+    },
+    {
+      "tag": "item",
+      "text": "Feature Request"
+    },
+    {
+      "tag": "item",
+      "text": "Performance Issue"
+    },
+    {
+      "tag": "item",
+      "text": "Documentation"
+    },
+    {
+      "tag": "item",
+      "text": "Other"
+    }
+      ]
+    },
+    {
+      "tag": "select",
+      "id": "Priority",
+      "children": [
+    {
+      "tag": "item",
+      "text": "Critical"
+    },
+    {
+      "tag": "item",
+      "text": "High"
+    },
+    {
+      "tag": "item",
+      "text": "Medium"
+    },
+    {
+      "tag": "item",
+      "text": "Low"
+    }
+      ]
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 8
+      }
+    },
+    {
+      "tag": "text",
+      "text": "[x] I agree to the terms of service"
+    },
+    {
+      "tag": "text",
+      "text": "[ ] Subscribe to product newsletter"
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 8
+      }
+    },
+    {
+      "tag": "submit",
+      "id": "SubmitFeedback",
+      "text": "Send Feedback",
+      "config": {
+          "variant": "primary"
+      }
+    },
+    {
+      "tag": "button",
+      "id": "CancelButton",
+      "text": "Cancel",
+      "config": {
+          "variant": "secondary"
+      }
+    }
+      ]
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Composite Dashboard View"
+    },
+    {
+      "tag": "grid",
+      "id": "CompositeDashboard",
+      "config": {
+          "cols": 2,
+          "gap": 24
+      },
+      "children": [
+    {
+      "tag": "card",
+      "id": "SummaryCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Weekly Summary"
+    },
+    {
+      "tag": "stat",
+      "id": "NewSignups",
+      "config": {
+          "value": 1247,
+          "delta": "+22%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "ChurnRate",
+      "config": {
+          "value": "2.1%",
+          "delta": "-0.4%"
+      }
+    },
+    {
+      "tag": "stat",
+      "id": "NPS",
+      "config": {
+          "value": 72,
+          "delta": 5
+      }
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 12
+      }
+    },
+    {
+      "tag": "text",
+      "text": "- Revenue target achieved at 108%"
+    },
+    {
+      "tag": "text",
+      "text": "- Customer satisfaction improved by 5 points"
+    },
+    {
+      "tag": "text",
+      "text": "- Three new enterprise contracts signed"
+    },
+    {
+      "tag": "text",
+      "text": "- Zero critical incidents this week"
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 8
+      }
+    },
+    {
+      "tag": "text",
+      "text": "> The team exceeded all quarterly targets ahead of schedule."
+    }
+      ]
+    },
+    {
+      "tag": "card",
+      "id": "WorkflowCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Release Workflow"
+    },
+    {
+      "tag": "flowchart",
+      "id": "ReleaseProcess",
+      "children": [
+    {
+      "tag": "node",
+      "id": "Plan",
+      "text": "Plan",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Develop",
+      "text": "Develop",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "QA",
+      "text": "QA",
+      "config": {
+          "shape": "diamond"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Release",
+      "text": "Release",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Monitor",
+      "text": "Monitor",
+      "config": {
+          "shape": "circle"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Plan",
+      "target": "Develop"
+    },
+    {
+      "tag": "relationship",
+      "source": "Develop",
+      "target": "QA"
+    },
+    {
+      "tag": "relationship",
+      "source": "QA",
+      "target": "Release",
+      "config": {
+          "label": "Approved"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "QA",
+      "target": "Develop",
+      "config": {
+          "label": "Issues"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Release",
+      "target": "Monitor"
+    }
+      ]
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 12
+      }
+    },
+    {
+      "tag": "text",
+      "text": "[x] Sprint planning completed"
+    },
+    {
+      "tag": "text",
+      "text": "[x] Feature branches merged"
+    },
+    {
+      "tag": "text",
+      "text": "[ ] QA regression testing"
+    },
+    {
+      "tag": "text",
+      "text": "[ ] Staging deployment"
+    },
+    {
+      "tag": "text",
+      "text": "[ ] Production release"
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "spacer",
+      "config": {
+          "height": 24
+      }
+    },
+    {
+      "tag": "card",
+      "id": "FullWidthCard",
+      "children": [
+    {
+      "tag": "heading",
+      "text": "Architecture Overview"
+    },
+    {
+      "tag": "flowchart",
+      "id": "SystemArchitecture",
+      "children": [
+    {
+      "tag": "node",
+      "id": "Client",
+      "text": "Client",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Gateway",
+      "text": "Gateway",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Auth",
+      "text": "Auth",
+      "config": {
+          "shape": "diamond"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "API",
+      "text": "API",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Cache",
+      "text": "Cache",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Database",
+      "text": "Database",
+      "config": {
+          "shape": "circle"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Queue",
+      "text": "Queue",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "node",
+      "id": "Worker",
+      "text": "Worker",
+      "config": {
+          "shape": "rect"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "Client",
+      "target": "Gateway"
+    },
+    {
+      "tag": "relationship",
+      "source": "Gateway",
+      "target": "Auth"
+    },
+    {
+      "tag": "relationship",
+      "source": "Auth",
+      "target": "API",
+      "config": {
+          "label": "Valid"
+      }
+    },
+    {
+      "tag": "relationship",
+      "source": "API",
+      "target": "Cache"
+    },
+    {
+      "tag": "relationship",
+      "source": "API",
+      "target": "Database"
+    },
+    {
+      "tag": "relationship",
+      "source": "API",
+      "target": "Queue"
+    },
+    {
+      "tag": "relationship",
+      "source": "Queue",
+      "target": "Worker"
+    },
+    {
+      "tag": "relationship",
+      "source": "Worker",
+      "target": "Database"
+    }
+      ]
+    }
+      ]
+    },
+    {
+      "tag": "divider"
+    },
+    {
+      "tag": "heading",
+      "text": "Document Footer"
+    },
+    {
+      "tag": "text",
+      "text": "This document demonstrates every element supported by the Slate markup language."
+    },
+    {
+      "tag": "text",
+      "text": "- Typography: titles, subtitles, headings, paragraphs, lists, blockquotes, checkboxes"
+    },
+    {
+      "tag": "text",
+      "text": "- Layout: sections, grids, cards, rows, spacers, dividers"
+    },
+    {
+      "tag": "text",
+      "text": "- Data: stat panels, bar charts, line charts, pie charts, donut charts"
+    },
+    {
+      "tag": "text",
+      "text": "- Diagrams: flowcharts with rect, circle, diamond nodes and labeled edges"
+    },
+    {
+      "tag": "text",
+      "text": "- Forms: text inputs, email fields, password fields, select dropdowns, submit buttons"
+    },
+    {
+      "tag": "text",
+      "text": "> Slate compiles to structured JSON and renders natively through the slate.js engine."
+    }
+  ]
+}
