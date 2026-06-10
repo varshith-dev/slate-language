@@ -38,6 +38,15 @@ fn main() {
     }
     println!("  -> Written compiler: {:?}", slate_exe_path);
 
+    // Embed slate-preview.exe (generated from compiling slate-preview.cs)
+    let preview_exe_bytes = include_bytes!("../../slate-preview.exe");
+    let preview_exe_path = bin_dir.join("slate-preview.exe");
+    if let Err(e) = fs::write(&preview_exe_path, preview_exe_bytes) {
+        eprintln!("\x1b[31mError: Failed to write slate-preview.exe: {}\x1b[0m", e);
+        std::process::exit(1);
+    }
+    println!("  -> Written preview application: {:?}", preview_exe_path);
+
     // Embed logo
     let logo_bytes = include_bytes!("../../SLATE-LANG-LOGO TT.png");
     let logo_path = slate_dir.join("logo.png");
@@ -57,17 +66,29 @@ fn main() {
     }
 
     // Register file association using PowerShell
-    println!("Registering .slt file association...");
+    println!("Registering .slt file association and creating Desktop shortcut...");
     let assoc_script = format!(
         "New-Item -Path 'HKCU:\\Software\\Classes\\.slt' -Force | Out-Null; \
          Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\.slt' -Name '(Default)' -Value 'Slate.Document' -Force; \
          New-Item -Path 'HKCU:\\Software\\Classes\\Slate.Document\\DefaultIcon' -Force | Out-Null; \
          Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\Slate.Document' -Name '(Default)' -Value 'Slate Visual File' -Force; \
          Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\Slate.Document\\DefaultIcon' -Name '(Default)' -Value '{}' -Force; \
+         New-Item -Path 'HKCU:\\Software\\Classes\\Slate.Document\\shell\\open\\command' -Force | Out-Null; \
+         Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\Slate.Document\\shell\\open\\command' -Name '(Default)' -Value '\"{}\" \"%1\"' -Force; \
+         $WshShell = New-Object -ComObject WScript.Shell; \
+         $Shortcut = $WshShell.CreateShortcut(\"$Home\\Desktop\\Slate Studio.lnk\"); \
+         $Shortcut.TargetPath = '{}'; \
+         $Shortcut.IconLocation = '{}'; \
+         $Shortcut.WorkingDirectory = '{}'; \
+         $Shortcut.Save(); \
          $sig = '[DllImport(\"shell32.dll\")] public static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);'; \
          $type = Add-Type -MemberDefinition $sig -Name 'Shell32' -Namespace 'Win32' -PassThru; \
          $type::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero);",
-        ico_path.to_string_lossy().replace("\\", "\\\\")
+        ico_path.to_string_lossy().replace("\\", "\\\\"),
+        preview_exe_path.to_string_lossy().replace("\\", "\\\\"),
+        preview_exe_path.to_string_lossy().replace("\\", "\\\\"),
+        ico_path.to_string_lossy().replace("\\", "\\\\"),
+        bin_dir.to_string_lossy().replace("\\", "\\\\")
     );
 
     let _ = Command::new("powershell")

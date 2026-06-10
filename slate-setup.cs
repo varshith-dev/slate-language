@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
@@ -201,16 +202,24 @@ namespace SlateSetup
 
                 Log("Writing slate compiler binary...");
                 ExtractResource("slate.exe", Path.Combine(binDir, "slate.exe"));
+                progressBar.Value = 35;
+
+                Log("Writing preview application binary...");
+                ExtractResource("slate-preview.exe", Path.Combine(binDir, "slate-preview.exe"));
                 progressBar.Value = 50;
 
                 Log("Writing logo resource...");
                 ExtractResource("logo.png", Path.Combine(slateDir, "logo.png"));
                 ExtractResource("logo.ico", Path.Combine(slateDir, "logo.ico"));
-                progressBar.Value = 70;
+                progressBar.Value = 65;
 
                 Log("Registering .slt file association...");
-                RegisterFileAssociation(".slt", "Slate.Document", "Slate Visual File", Path.Combine(slateDir, "logo.ico"));
-                progressBar.Value = 80;
+                RegisterFileAssociation(".slt", "Slate.Document", "Slate Visual File", Path.Combine(slateDir, "logo.ico"), Path.Combine(binDir, "slate-preview.exe"));
+                progressBar.Value = 75;
+
+                Log("Creating Desktop shortcut...");
+                CreateDesktopShortcut(Path.Combine(binDir, "slate-preview.exe"), Path.Combine(slateDir, "logo.ico"));
+                progressBar.Value = 85;
 
                 Log("Updating environment PATH...");
                 string oldPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? "";
@@ -273,6 +282,22 @@ namespace SlateSetup
                 string slateDir = Path.Combine(home, ".slate");
                 string binDir = Path.Combine(slateDir, "bin");
 
+                Log("Removing Desktop shortcut...");
+                try
+                {
+                    string desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                    string shortcutPath = Path.Combine(desktopFolder, "Slate Studio.lnk");
+                    if (File.Exists(shortcutPath))
+                    {
+                        File.Delete(shortcutPath);
+                        Log("Deleted Desktop shortcut.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log("Warning removing shortcut: " + ex.Message);
+                }
+
                 Log("Removing system files...");
                 if (Directory.Exists(slateDir))
                 {
@@ -280,6 +305,22 @@ namespace SlateSetup
                     Log("Deleted slate files.");
                 }
                 progressBar.Value = 40;
+
+                Log("Removing browser emulation registry keys...");
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true))
+                    {
+                        if (key != null)
+                        {
+                            key.DeleteValue("slate-preview.exe", false);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log("Warning removing browser emulation keys: " + ex.Message);
+                }
 
                 Log("Removing file association registry entries...");
                 try
@@ -362,7 +403,7 @@ namespace SlateSetup
             catch {}
         }
 
-        private void RegisterFileAssociation(string extension, string progId, string description, string iconPath)
+        private void RegisterFileAssociation(string extension, string progId, string description, string iconPath, string openCommandPath)
         {
             try
             {
@@ -378,11 +419,53 @@ namespace SlateSetup
                     {
                         defaultIcon.SetValue("", iconPath);
                     }
+                    using (RegistryKey shellCommand = key.CreateSubKey(@"shell\open\command"))
+                    {
+                        shellCommand.SetValue("", "\"" + openCommandPath + "\" \"%1\"");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Log("Warning: Could not register file association: " + ex.Message);
+            }
+        }
+
+        private void CreateDesktopShortcut(string targetExePath, string iconPath)
+        {
+            try
+            {
+                string desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                string shortcutPath = Path.Combine(desktopFolder, "Slate Studio.lnk");
+                
+                string script = string.Format(
+                    "$WshShell = New-Object -ComObject WScript.Shell; " +
+                    "$Shortcut = $WshShell.CreateShortcut('{0}'); " +
+                    "$Shortcut.TargetPath = '{1}'; " +
+                    "$Shortcut.IconLocation = '{2}'; " +
+                    "$Shortcut.WorkingDirectory = '{3}'; " +
+                    "$Shortcut.Save();",
+                    shortcutPath.Replace("'", "''"),
+                    targetExePath.Replace("'", "''"),
+                    iconPath.Replace("'", "''"),
+                    Path.GetDirectoryName(targetExePath).Replace("'", "''")
+                );
+
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = "powershell";
+                psi.Arguments = "-NoProfile -NonInteractive -Command \"" + script + "\"";
+                psi.CreateNoWindow = true;
+                psi.UseShellExecute = false;
+                
+                using (Process proc = Process.Start(psi))
+                {
+                    proc.WaitForExit();
+                }
+                Log("Desktop shortcut created: " + shortcutPath);
+            }
+            catch (Exception ex)
+            {
+                Log("Warning: Could not create desktop shortcut: " + ex.Message);
             }
         }
 
