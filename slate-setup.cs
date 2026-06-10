@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace SlateSetup
 {
@@ -33,6 +34,12 @@ namespace SlateSetup
         private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);
         private const uint WM_SETTINGCHANGE = 0x001a;
         private const uint SMTO_ABORTIFHUNG = 0x0002;
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
+        private const uint SHCNE_ASSOCCHANGED = 0x08000000;
+        private const uint SHCNF_IDLIST = 0x0000;
 
         public SetupForm()
         {
@@ -198,7 +205,12 @@ namespace SlateSetup
 
                 Log("Writing logo resource...");
                 ExtractResource("logo.png", Path.Combine(slateDir, "logo.png"));
-                progressBar.Value = 75;
+                ExtractResource("logo.ico", Path.Combine(slateDir, "logo.ico"));
+                progressBar.Value = 70;
+
+                Log("Registering .slt file association...");
+                RegisterFileAssociation(".slt", "Slate.Document", "Slate Visual File", Path.Combine(slateDir, "logo.ico"));
+                progressBar.Value = 80;
 
                 Log("Updating environment PATH...");
                 string oldPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? "";
@@ -221,6 +233,7 @@ namespace SlateSetup
 
                 Log("Broadcasting system configuration update...");
                 BroadcastSettingChange();
+                SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
                 progressBar.Value = 100;
 
                 Log("Slate installation completed successfully!");
@@ -266,7 +279,19 @@ namespace SlateSetup
                     Directory.Delete(slateDir, true);
                     Log("Deleted slate files.");
                 }
-                progressBar.Value = 50;
+                progressBar.Value = 40;
+
+                Log("Removing file association registry entries...");
+                try
+                {
+                    Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\.slt", false);
+                    Registry.CurrentUser.DeleteSubKeyTree(@"Software\Classes\Slate.Document", false);
+                }
+                catch (Exception ex)
+                {
+                    Log("Warning removing registry entries: " + ex.Message);
+                }
+                progressBar.Value = 60;
 
                 Log("Removing Slate from PATH environment variable...");
                 string oldPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? "";
@@ -287,6 +312,7 @@ namespace SlateSetup
 
                 Log("Broadcasting uninstallation update...");
                 BroadcastSettingChange();
+                SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
                 progressBar.Value = 100;
 
                 Log("Slate has been successfully uninstalled.");
@@ -334,6 +360,30 @@ namespace SlateSetup
                 SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, UIntPtr.Zero, "Environment", SMTO_ABORTIFHUNG, 5000, out result);
             }
             catch {}
+        }
+
+        private void RegisterFileAssociation(string extension, string progId, string description, string iconPath)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Classes\" + extension))
+                {
+                    key.SetValue("", progId);
+                }
+
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Classes\" + progId))
+                {
+                    key.SetValue("", description);
+                    using (RegistryKey defaultIcon = key.CreateSubKey("DefaultIcon"))
+                    {
+                        defaultIcon.SetValue("", iconPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Warning: Could not register file association: " + ex.Message);
+            }
         }
 
         [STAThread]

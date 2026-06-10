@@ -47,6 +47,33 @@ fn main() {
         println!("  -> Saved logo to {:?}", logo_path);
     }
 
+    // Embed icon
+    let ico_bytes = include_bytes!("../../logo.ico");
+    let ico_path = slate_dir.join("logo.ico");
+    if let Err(e) = fs::write(&ico_path, ico_bytes) {
+        eprintln!("\x1b[31mWarning: Failed to save logo.ico: {}\x1b[0m", e);
+    } else {
+        println!("  -> Saved icon to {:?}", ico_path);
+    }
+
+    // Register file association using PowerShell
+    println!("Registering .slt file association...");
+    let assoc_script = format!(
+        "New-Item -Path 'HKCU:\\Software\\Classes\\.slt' -Force | Out-Null; \
+         Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\.slt' -Name '(Default)' -Value 'Slate.Document' -Force; \
+         New-Item -Path 'HKCU:\\Software\\Classes\\Slate.Document\\DefaultIcon' -Force | Out-Null; \
+         Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\Slate.Document' -Name '(Default)' -Value 'Slate Visual File' -Force; \
+         Set-ItemProperty -Path 'HKCU:\\Software\\Classes\\Slate.Document\\DefaultIcon' -Name '(Default)' -Value '{}' -Force; \
+         $sig = '[DllImport(\"shell32.dll\")] public static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);'; \
+         $type = Add-Type -MemberDefinition $sig -Name 'Shell32' -Namespace 'Win32' -PassThru; \
+         $type::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero);",
+        ico_path.to_string_lossy().replace("\\", "\\\\")
+    );
+
+    let _ = Command::new("powershell")
+        .args(&["-Command", &assoc_script])
+        .output();
+
     // Configure PATH env variable
     println!("Configuring PATH environment variable...");
     let bin_path_str = bin_dir.to_string_lossy().to_string();
